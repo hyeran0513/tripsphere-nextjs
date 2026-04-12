@@ -3,9 +3,23 @@
 import { useRouter, useSearchParams } from "next/navigation"
 import { useState } from "react"
 
+import { useMemo } from "react"
+
 import { PATH } from "@/constants/path"
 import { useAccommodationsQuery } from "@/hooks/queries/use-accommodations-query"
 import type { SearchParams } from "@/types/search"
+
+export const ACCOMMODATION_CATEGORIES = [
+  "전체",
+  "호텔",
+  "모텔",
+  "리조트",
+  "펜션",
+  "게스트하우스",
+  "캠핑",
+] as const
+
+export type AccommodationCategory = (typeof ACCOMMODATION_CATEGORIES)[number]
 
 export function useSearchPage() {
   const router = useRouter()
@@ -22,6 +36,7 @@ export function useSearchPage() {
   const [checkIn, setCheckIn] = useState(checkInParam)
   const [checkOut, setCheckOut] = useState(checkOutParam)
   const [guests, setGuests] = useState(guestsParam)
+  const [category, setCategory] = useState<AccommodationCategory>("전체")
 
   const queryParams: SearchParams | null =
     cityParam && checkInParam && checkOutParam
@@ -51,6 +66,13 @@ export function useSearchPage() {
     router.push(`${PATH.SEARCH}?${params.toString()}`)
   }
 
+  const allAccommodations = accommodationsQuery.data ?? []
+
+  const filteredAccommodations = useMemo(() => {
+    if (category === "전체") return allAccommodations
+    return allAccommodations.filter((item) => item.type === category)
+  }, [allAccommodations, category])
+
   return {
     city,
     setCity,
@@ -63,7 +85,9 @@ export function useSearchPage() {
     guests,
     setGuests,
     handleSearch,
-    accommodations: accommodationsQuery.data ?? [],
+    category,
+    setCategory,
+    accommodations: filteredAccommodations,
     isSearching: accommodationsQuery.isLoading,
     hasSearched: !!queryParams,
   }

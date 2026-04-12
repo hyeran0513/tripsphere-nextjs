@@ -18,6 +18,7 @@ type SearchBarProps = {
   onGuestsChange: (value: number) => void
   onSearch: () => void
   isSearching?: boolean
+  vertical?: boolean
 }
 
 export function SearchBar({
@@ -33,6 +34,7 @@ export function SearchBar({
   onGuestsChange,
   onSearch,
   isSearching,
+  vertical,
 }: SearchBarProps) {
   const { data: cities = [], isLoading: isCitiesLoading } = useCitiesQuery()
 
@@ -43,7 +45,9 @@ export function SearchBar({
   const subCities = selectedCity?.subCities ?? []
 
   return (
-    <div className="flex w-full max-w-5xl items-end gap-2 rounded-2xl bg-base-100/90 p-3 shadow-lg backdrop-blur-sm">
+    <div
+      className={`${vertical ? "flex flex-col gap-3 rounded-2xl bg-base-100/90 p-4 shadow-lg backdrop-blur-sm" : "flex w-full max-w-5xl items-end gap-2 rounded-2xl bg-base-100/90 p-3 shadow-lg backdrop-blur-sm"}`}
+    >
       {/* 지역 */}
       <div className="form-control min-w-0 flex-1">
         <label className="label py-0.5">
@@ -107,14 +111,14 @@ export function SearchBar({
       />
 
       {/* 인원수 */}
-      <div className="form-control w-20 shrink-0">
+      <div className={`form-control ${vertical ? "w-full" : "w-20 shrink-0"}`}>
         <label className="label py-0.5">
           <span className="label-text flex items-center gap-1 text-xs font-semibold">
             <Users className="size-3.5" />
             인원
           </span>
         </label>
-        
+
         <input
           type="number"
           className="input input-bordered input-sm w-full"
@@ -128,7 +132,7 @@ export function SearchBar({
       {/* 검색 버튼 */}
       <button
         type="button"
-        className={`btn btn-primary btn-sm shrink-0 ${isSearching ? "loading" : ""}`}
+        className={`btn btn-primary btn-sm ${vertical ? "w-full" : "shrink-0"} ${isSearching ? "loading" : ""}`}
         onClick={onSearch}
         disabled={!city || !checkIn || !checkOut || isSearching}
       >
