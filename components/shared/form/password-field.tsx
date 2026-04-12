@@ -41,36 +41,21 @@ export function PasswordField<TFieldValues extends FieldValues>({
           <label className="label py-1" htmlFor={inputId}>
             <span className="label-text font-medium">{label}</span>
           </label>
-          <div className="flex w-full min-w-0 items-stretch gap-2">
-            <div className={`${daisyControlShellClassNames(!!fieldState.error)} min-w-0 flex-1`}>
-              <Icon className="text-base-content/40 size-[1.1em] shrink-0" aria-hidden />
-              {visible ? (
-                <input
-                  {...field}
-                  id={inputId}
-                  type="text"
-                  autoComplete={autoComplete}
-                  placeholder={placeholder}
-                  spellCheck={false}
-                  className="min-w-0 grow border-0 bg-transparent outline-none focus:ring-0"
-                  disabled={disabled}
-                />
-              ) : (
-                <input
-                  {...field}
-                  id={inputId}
-                  type="password"
-                  autoComplete={autoComplete}
-                  placeholder={placeholder}
-                  spellCheck={false}
-                  className="min-w-0 grow border-0 bg-transparent outline-none focus:ring-0"
-                  disabled={disabled}
-                />
-              )}
-            </div>
+          <div className={`${daisyControlShellClassNames(!!fieldState.error)} w-full`}>
+            <Icon className="text-base-content/40 size-[1.1em] shrink-0" aria-hidden />
+            <input
+              {...field}
+              id={inputId}
+              type={visible ? "text" : "password"}
+              autoComplete={autoComplete}
+              placeholder={placeholder}
+              spellCheck={false}
+              className="min-w-0 grow border-0 bg-transparent outline-none focus:ring-0"
+              disabled={disabled}
+            />
             <button
               type="button"
-              className="btn btn-ghost btn-sm w-10 shrink-0 self-stretch rounded-lg border border-base-content/15 px-0 hover:border-base-content/25 hover:bg-base-200/70 focus-visible:border-primary/50 focus-visible:outline-none"
+              className="btn btn-ghost btn-xs btn-circle shrink-0 hover:bg-base-200/70"
               onClick={() => setVisible((v) => !v)}
               disabled={disabled}
               aria-label={visible ? "비밀번호 숨기기" : "비밀번호 표시"}

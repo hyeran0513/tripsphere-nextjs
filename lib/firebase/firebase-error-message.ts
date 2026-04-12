@@ -20,6 +20,10 @@ export function getFirebaseErrorMessage(error: unknown): string {
       case "auth/wrong-password":
         return "비밀번호가 올바르지 않습니다."
 
+      case "auth/invalid-credential":
+      case "auth/invalid-login-credentials":
+        return "이메일 또는 비밀번호가 올바르지 않습니다."
+
       case "auth/weak-password":
         return "비밀번호가 너무 약합니다."
 
