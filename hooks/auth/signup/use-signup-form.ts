@@ -18,6 +18,9 @@ export function useSignUpForm() {
       email: "",
       password: "",
       confirmPassword: "",
+      nickname: "",
+      username: "",
+      phone: "",
     },
   })
 

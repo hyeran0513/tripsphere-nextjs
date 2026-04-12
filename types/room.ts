@@ -27,6 +27,19 @@ export function getStayTypeLabel(stayType: string): string {
   return stayType
 }
 
+/** room type을 한글 라벨로 변환 */
+export function getRoomTypeLabel(type: string): string {
+  const labels: Record<string, string> = {
+    single: "싱글룸",
+    double: "더블룸",
+    twin: "트윈룸",
+    suite: "스위트룸",
+    deluxe: "디럭스룸",
+    family: "패밀리룸",
+  }
+  return labels[type] ?? type
+}
+
 /** 할인 적용된 최종 가격 계산 */
 export function getDiscountedPrice(room: Room): number {
   return Math.round(room.original_price * (1 - room.discount_rate / 100))

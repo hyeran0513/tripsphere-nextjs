@@ -1,6 +1,7 @@
 "use client"
 
 import { useState } from "react"
+import Image from "next/image"
 import { ChevronLeft, ChevronRight } from "lucide-react"
 
 type AccommodationImagesProps = {
@@ -23,11 +24,14 @@ export function AccommodationImages({ images, name }: AccommodationImagesProps) 
   const next = () => setCurrent((c) => (c === images.length - 1 ? 0 : c + 1))
 
   return (
-    <div className="relative overflow-hidden rounded-lg">
-      <img
+    <div className="relative h-72 w-full overflow-hidden rounded-lg sm:h-96">
+      <Image
         src={images[current]}
         alt={`${name} ${current + 1}`}
-        className="h-72 w-full object-cover sm:h-96"
+        fill
+        className="object-cover"
+        sizes="100vw"
+        unoptimized
       />
 
       {images.length > 1 && (

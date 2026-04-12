@@ -1,5 +1,6 @@
 "use client"
 
+import Image from "next/image"
 import { MapPin, Star } from "lucide-react"
 import Link from "next/link"
 import { useQueries } from "@tanstack/react-query"
@@ -7,6 +8,7 @@ import { collection, getDocs, query, where } from "firebase/firestore"
 
 import { PATH } from "@/constants/path"
 import { db } from "@/lib/firebase/client"
+import { getAccommodationTypeLabel } from "@/types/accommodation"
 import type { Accommodation } from "@/types/accommodation"
 import type { Room } from "@/types/room"
 import { getDiscountedPrice, getStayTypeLabel } from "@/types/room"
@@ -48,11 +50,19 @@ export function AccommodationList({
     )
   }
 
-  if (!hasSearched) return null
+  if (!hasSearched) {
+    return (
+      <div className="flex flex-1 flex-col items-center justify-center py-16 text-base-content/50">
+        <MapPin className="mb-3 size-12" />
+        <p className="text-lg font-medium">숙소를 검색해보세요</p>
+        <p className="text-sm">지역과 날짜를 선택하고 검색하세요.</p>
+      </div>
+    )
+  }
 
   if (accommodations.length === 0) {
     return (
-      <div className="flex flex-col items-center justify-center py-16 text-base-content/50">
+      <div className="flex flex-1 flex-col items-center justify-center py-16 text-base-content/50">
         <MapPin className="mb-3 size-12" />
         <p className="text-lg font-medium">검색 결과가 없습니다</p>
         <p className="text-sm">다른 지역이나 날짜로 검색해보세요.</p>
@@ -75,9 +85,16 @@ export function AccommodationList({
             href={`${PATH.ACCOMMODATION}/${item.id}`}
             className="card card-side border border-base-300 bg-base-100 transition-shadow hover:shadow-md"
           >
-            <figure className="w-48 shrink-0 sm:w-64">
+            <figure className="relative min-h-36 w-48 shrink-0 sm:min-h-40 sm:w-64">
               {item.images?.[0] ? (
-                <img src={item.images[0]} alt={item.name} className="h-full w-full object-cover" />
+                <Image
+                  src={item.images[0]}
+                  alt={item.name}
+                  fill
+                  className="object-cover"
+                  sizes="(max-width: 640px) 12rem, 16rem"
+                  unoptimized
+                />
               ) : (
                 <div className="flex h-full w-full items-center justify-center bg-base-200 text-base-content/30">
                   이미지 없음
@@ -90,7 +107,11 @@ export function AccommodationList({
                 <div>
                   <div className="flex items-center gap-2">
                     <h3 className="card-title text-base">{item.name}</h3>
-                    {item.type && <span className="badge badge-outline badge-sm">{item.type}</span>}
+                    {item.type && (
+                      <span className="badge badge-outline badge-sm">
+                        {getAccommodationTypeLabel(item.type)}
+                      </span>
+                    )}
                   </div>
                   <p className="mt-1 flex items-center gap-1 text-sm text-base-content/60">
                     <MapPin className="size-3.5" />
@@ -122,7 +143,7 @@ export function AccommodationList({
                       </span>
                       {minPriceRoom.discount_rate > 0 && (
                         <>
-                          <span className="badge badge-error badge-xs font-bold">
+                          <span className="text-xs font-bold text-error">
                             {minPriceRoom.discount_rate}%
                           </span>
                           <span className="text-xs text-base-content/40 line-through">

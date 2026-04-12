@@ -17,4 +17,8 @@ export const PATH = {
   POINTS: "/points",
   /* 결제 */
   CHECKOUT: "/checkout",
+  /* 마이페이지 */
+  MYPAGE: "/mypage",
+  /* 회원 정보 수정 */
+  PROFILE: "/mypage/profile",
 }

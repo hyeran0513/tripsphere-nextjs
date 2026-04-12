@@ -1,6 +1,7 @@
 "use client"
 
 import { useState } from "react"
+import Image from "next/image"
 import { useRouter } from "next/navigation"
 import { ClipboardList, XCircle } from "lucide-react"
 import { getStayTypeLabel } from "@/types/room"
@@ -24,6 +25,7 @@ function OrderCard({ order }: { order: OrderWithDetails }) {
 
   const status = STATUS_LABEL[order.payment_status] ?? STATUS_LABEL.pending
   const orderDate = format(new Date(order.order_date), "yyyy.MM.dd HH:mm")
+
   const handleCancel = async () => {
     await cancelOrder.mutateAsync({
       order_id: order.id,
@@ -38,12 +40,16 @@ function OrderCard({ order }: { order: OrderWithDetails }) {
   return (
     <>
       <div className="card card-side border border-base-300 bg-base-100">
-        <figure className="w-32 shrink-0 sm:w-40">
+        {/* 이미지 (왼쪽) */}
+        <figure className="relative min-h-32 w-40 shrink-0 sm:min-h-36 sm:w-52">
           {order.room?.image ? (
-            <img
+            <Image
               src={order.room.image}
               alt={order.room?.name ?? "객실"}
-              className="h-full w-full object-cover"
+              fill
+              className="object-cover"
+              sizes="(max-width: 640px) 10rem, 13rem"
+              unoptimized
             />
           ) : (
             <div className="flex h-full w-full items-center justify-center bg-base-200 text-xs text-base-content/30">
@@ -52,44 +58,56 @@ function OrderCard({ order }: { order: OrderWithDetails }) {
           )}
         </figure>
 
-        <div className="card-body gap-2 p-4">
-          <div className="flex items-start justify-between gap-2">
-            <div>
-              {order.room?.accommodation_name && (
-                <p className="text-xs text-base-content/50">{order.room.accommodation_name}</p>
-              )}
+        {/* 정보 (중앙) */}
+        <div className="card-body flex-1 gap-2 p-4">
+          <div>
+            {order.room?.accommodation_name && (
+              <p className="text-xs text-base-content/50">{order.room.accommodation_name}</p>
+            )}
+            <div className="flex items-center gap-2">
               <h3 className="card-title text-base">{order.room?.name ?? "객실 정보 없음"}</h3>
+              <span className={`badge badge-sm ${status.className}`}>{status.text}</span>
             </div>
-            <span className={`badge badge-sm ${status.className}`}>{status.text}</span>
           </div>
 
-          <div className="flex flex-col gap-1 text-sm text-base-content/70">
-            <span>주문일: {orderDate}</span>
-            {order.room?.stay_type && <span>{getStayTypeLabel(order.room.stay_type)}</span>}
-            {order.selectedTime && <span>입실 시간: {order.selectedTime}</span>}
-            {order.duration?.hours && <span>이용 시간: {order.duration.hours}시간</span>}
-            <span className="font-semibold text-primary">
-              {order.used_points.toLocaleString()}P
-            </span>
+          <div className="flex flex-wrap items-center gap-2 text-sm">
+            {order.room?.stay_type && (
+              <span className="badge badge-outline text-xs">
+                {getStayTypeLabel(order.room.stay_type)}
+              </span>
+            )}
+            {order.selectedTime && (
+              <span className="text-xs text-base-content/50">입실 {order.selectedTime}</span>
+            )}
+            {order.duration?.hours && (
+              <span className="text-xs text-base-content/50">{order.duration.hours}시간</span>
+            )}
+          </div>
+
+          <div className="text-xs text-base-content/50">주문일: {orderDate}</div>
+
+          <div className="flex items-center gap-2">
+            <span className="text-lg font-bold">{order.used_points.toLocaleString()}P</span>
           </div>
 
           {order.cancel_reason && (
             <p className="text-xs text-error">취소 사유: {order.cancel_reason}</p>
           )}
-
-          {order.payment_status === "completed" && (
-            <div className="card-actions mt-1">
-              <button
-                type="button"
-                className="btn btn-outline btn-error btn-xs"
-                onClick={() => setShowCancelModal(true)}
-              >
-                <XCircle className="size-3.5" />
-                예약 취소
-              </button>
-            </div>
-          )}
         </div>
+
+        {/* 버튼 (오른쪽) */}
+        {order.payment_status === "completed" && (
+          <div className="flex flex-col justify-center gap-2 border-l border-base-300 p-4">
+            <button
+              type="button"
+              className="btn btn-outline btn-error btn-sm"
+              onClick={() => setShowCancelModal(true)}
+            >
+              <XCircle className="size-3.5" />
+              예약 취소
+            </button>
+          </div>
+        )}
       </div>
 
       {/* 취소 모달 */}
@@ -154,7 +172,7 @@ export function OrderList() {
       <div className="mx-auto max-w-6xl space-y-4 p-4">
         <div className="skeleton h-8 w-40" />
         {Array.from({ length: 3 }).map((_, i) => (
-          <div key={i} className="skeleton h-32 w-full rounded-lg" />
+          <div key={i} className="skeleton h-36 w-full rounded-lg" />
         ))}
       </div>
     )

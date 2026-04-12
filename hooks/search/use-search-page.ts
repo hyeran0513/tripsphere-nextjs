@@ -1,12 +1,11 @@
 "use client"
 
 import { useRouter, useSearchParams } from "next/navigation"
-import { useState } from "react"
-
-import { useMemo } from "react"
+import { useMemo, useState } from "react"
 
 import { PATH } from "@/constants/path"
 import { useAccommodationsQuery } from "@/hooks/queries/use-accommodations-query"
+import { getCategoryToType } from "@/types/accommodation"
 import type { SearchParams } from "@/types/search"
 
 export const ACCOMMODATION_CATEGORIES = [
@@ -66,12 +65,13 @@ export function useSearchPage() {
     router.push(`${PATH.SEARCH}?${params.toString()}`)
   }
 
-  const allAccommodations = accommodationsQuery.data ?? []
-
   const filteredAccommodations = useMemo(() => {
+    const allAccommodations = accommodationsQuery.data ?? []
     if (category === "전체") return allAccommodations
-    return allAccommodations.filter((item) => item.type === category)
-  }, [allAccommodations, category])
+    const typeKey = getCategoryToType(category)
+    if (!typeKey) return allAccommodations
+    return allAccommodations.filter((item) => item.type === typeKey)
+  }, [accommodationsQuery.data, category])
 
   return {
     city,

@@ -1,6 +1,6 @@
 "use client"
 
-import { CircleAlert, Mail, ShieldCheck } from "lucide-react"
+import { CircleAlert, Mail, Phone, ShieldCheck, User } from "lucide-react"
 import Link from "next/link"
 
 import { InputField } from "@/components/shared/form/input-field"
@@ -48,6 +48,38 @@ export function SignUpForm() {
               autoComplete="new-password"
               id="signup-confirm-password"
               icon={ShieldCheck}
+              disabled={isPending}
+            />
+
+            <InputField
+              control={form.control}
+              name="nickname"
+              label="닉네임"
+              placeholder="닉네임을 입력하세요"
+              id="signup-nickname"
+              icon={User}
+              disabled={isPending}
+            />
+
+            <InputField
+              control={form.control}
+              name="username"
+              label="이름"
+              placeholder="이름을 입력하세요"
+              id="signup-username"
+              icon={User}
+              disabled={isPending}
+            />
+
+            <InputField
+              control={form.control}
+              name="phone"
+              label="전화번호"
+              type="tel"
+              placeholder="010-1234-5678"
+              autoComplete="tel"
+              id="signup-phone"
+              icon={Phone}
               disabled={isPending}
             />
           </fieldset>

@@ -1,5 +1,6 @@
 "use client"
 
+import Image from "next/image"
 import { ShoppingCart, Trash2 } from "lucide-react"
 import { useRouter } from "next/navigation"
 
@@ -20,7 +21,7 @@ export function CartList() {
       <div className="mx-auto max-w-6xl space-y-4 p-4">
         <div className="skeleton h-8 w-40" />
         {Array.from({ length: 3 }).map((_, i) => (
-          <div key={i} className="skeleton h-32 w-full rounded-lg" />
+          <div key={i} className="skeleton h-36 w-full rounded-lg" />
         ))}
       </div>
     )
@@ -70,12 +71,16 @@ export function CartList() {
 
           return (
             <div key={item.id} className="card card-side border border-base-300 bg-base-100">
-              <figure className="w-32 shrink-0 sm:w-40">
+              {/* 이미지 (왼쪽) */}
+              <figure className="relative min-h-32 w-40 shrink-0 sm:min-h-36 sm:w-52">
                 {item.room?.image ? (
-                  <img
+                  <Image
                     src={item.room.image}
                     alt={item.room?.name ?? "객실"}
-                    className="h-full w-full object-cover"
+                    fill
+                    className="object-cover"
+                    sizes="(max-width: 640px) 10rem, 13rem"
+                    unoptimized
                   />
                 ) : (
                   <div className="flex h-full w-full items-center justify-center bg-base-200 text-xs text-base-content/30">
@@ -84,50 +89,55 @@ export function CartList() {
                 )}
               </figure>
 
-              <div className="card-body gap-2 p-4">
+              {/* 정보 (중앙) */}
+              <div className="card-body flex-1 gap-2 p-4">
                 {item.room?.accommodation_name && (
                   <p className="text-xs text-base-content/50">{item.room.accommodation_name}</p>
                 )}
                 <h3 className="card-title text-base">{item.room?.name ?? "객실 정보 없음"}</h3>
 
                 {item.room && (
-                  <>
-                    <span className="badge badge-outline badge-sm">
+                  <div className="flex flex-wrap items-center gap-2 text-sm">
+                    <span className="badge badge-outline text-xs">
                       {getStayTypeLabel(item.room.stay_type)}
                     </span>
-                    <div className="flex items-center gap-2">
-                      {hasDiscount && (
-                        <>
-                          <span className="badge badge-error badge-sm font-bold">
-                            {item.room.discount_rate}%
-                          </span>
-                          <span className="text-sm text-base-content/40 line-through">
-                            {item.room.original_price.toLocaleString()}원
-                          </span>
-                        </>
-                      )}
-                      <span className="font-bold">{discountedPrice.toLocaleString()}원</span>
-                    </div>
-                  </>
+                  </div>
                 )}
 
-                <div className="card-actions mt-2 flex items-center gap-2">
-                  <button
-                    type="button"
-                    className="btn btn-primary btn-xs"
-                    onClick={() => handleCheckout(item.room_id, item.room?.stay_type ?? "")}
-                  >
-                    예약하기
-                  </button>
-                  <button
-                    type="button"
-                    className="btn btn-ghost btn-xs text-error"
-                    disabled={removeFromCart.isPending}
-                    onClick={() => removeFromCart.mutate(item.id)}
-                  >
-                    <Trash2 className="size-3.5" />
-                  </button>
-                </div>
+                {item.room && (
+                  <div className="flex items-center gap-2">
+                    {hasDiscount && (
+                      <>
+                        <span className="text-sm font-bold text-error">
+                          {item.room.discount_rate}%
+                        </span>
+                        <span className="text-sm text-base-content/40 line-through">
+                          {item.room.original_price.toLocaleString()}원
+                        </span>
+                      </>
+                    )}
+                    <span className="text-lg font-bold">{discountedPrice.toLocaleString()}원</span>
+                  </div>
+                )}
+              </div>
+
+              {/* 버튼 (오른쪽) */}
+              <div className="flex flex-col justify-center gap-2 border-l border-base-300 p-4">
+                <button
+                  type="button"
+                  className="btn btn-primary btn-sm"
+                  onClick={() => handleCheckout(item.room_id, item.room?.stay_type ?? "")}
+                >
+                  예약하기
+                </button>
+                <button
+                  type="button"
+                  className="btn btn-ghost btn-sm text-error"
+                  disabled={removeFromCart.isPending}
+                  onClick={() => removeFromCart.mutate(item.id)}
+                >
+                  <Trash2 className="size-4" />
+                </button>
               </div>
             </div>
           )

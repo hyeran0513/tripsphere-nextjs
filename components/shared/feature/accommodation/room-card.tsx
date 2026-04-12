@@ -1,5 +1,6 @@
 "use client"
 
+import Image from "next/image"
 import { ShoppingCart } from "lucide-react"
 import { useRouter } from "next/navigation"
 
@@ -7,7 +8,12 @@ import { PATH } from "@/constants/path"
 import { useAuth } from "@/hooks/auth/use-auth"
 import { useAddToCartMutation } from "@/hooks/mutations/use-cart-mutation"
 import type { Room } from "@/types/room"
-import { getDiscountedPrice, formatRoomTime, getStayTypeLabel } from "@/types/room"
+import {
+  getDiscountedPrice,
+  formatRoomTime,
+  getStayTypeLabel,
+  getRoomTypeLabel,
+} from "@/types/room"
 
 type RoomCardProps = {
   room: Room
@@ -45,9 +51,16 @@ export function RoomCard({ room }: RoomCardProps) {
   return (
     <div className="card card-side border border-base-300 bg-base-100">
       {/* 이미지 (왼쪽) */}
-      <figure className="w-40 shrink-0 sm:w-52">
+      <figure className="relative min-h-32 w-40 shrink-0 sm:min-h-36 sm:w-52">
         {room.images?.[0] ? (
-          <img src={room.images[0]} alt={room.name} className="h-full w-full object-cover" />
+          <Image
+            src={room.images[0]}
+            alt={room.name}
+            fill
+            className="object-cover"
+            sizes="(max-width: 640px) 10rem, 13rem"
+            unoptimized
+          />
         ) : (
           <div className="flex h-full w-full items-center justify-center bg-base-200 text-base-content/30">
             이미지 없음
@@ -60,7 +73,9 @@ export function RoomCard({ room }: RoomCardProps) {
         <div>
           <div className="flex items-center gap-2">
             <h3 className="card-title text-base">{room.name}</h3>
-            {room.type && <span className="badge badge-outline badge-sm">{room.type}</span>}
+            {room.type && (
+              <span className="badge badge-outline badge-sm">{getRoomTypeLabel(room.type)}</span>
+            )}
           </div>
           {room.description && (
             <p className="mt-1 text-sm text-base-content/60">{room.description}</p>
@@ -72,7 +87,7 @@ export function RoomCard({ room }: RoomCardProps) {
             성인 {room.capacity.adults}인 / 아동 {room.capacity.children}인
           </span>
           <span className="badge badge-outline text-xs">{getStayTypeLabel(room.stay_type)}</span>
-          <span className={`badge badge-sm ${isSoldOut ? "badge-error" : "badge-success"}`}>
+          <span className={`text-xs font-medium ${isSoldOut ? "text-error" : "text-primary"}`}>
             {isSoldOut ? "매진" : `남은 객실 ${room.stock}개`}
           </span>
         </div>
@@ -85,7 +100,7 @@ export function RoomCard({ room }: RoomCardProps) {
         <div className="flex items-center gap-2">
           {hasDiscount && (
             <>
-              <span className="badge badge-error badge-sm font-bold">{room.discount_rate}%</span>
+              <span className="text-sm font-bold text-error">{room.discount_rate}%</span>
               <span className="text-sm text-base-content/40 line-through">
                 {room.original_price.toLocaleString()}원
               </span>
