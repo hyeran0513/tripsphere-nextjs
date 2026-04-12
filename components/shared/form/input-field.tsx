@@ -38,13 +38,18 @@ export function InputField<TFieldValues extends FieldValues>({
       name={name}
       render={({ field, fieldState }) => (
         <div className="form-control w-full">
+          {/* 라벨 */}
           <label className="label py-1" htmlFor={inputId}>
             <span className="label-text font-medium">{label}</span>
           </label>
+
           <div className={daisyControlShellClassNames(!!fieldState.error)}>
+            {/* 아이콘 */}
             {Icon ? (
               <Icon className="text-base-content/40 size-[1.1em] shrink-0" aria-hidden />
             ) : null}
+
+            {/* 입력 필드 */}
             <input
               {...field}
               id={inputId}
@@ -55,6 +60,8 @@ export function InputField<TFieldValues extends FieldValues>({
               disabled={disabled}
             />
           </div>
+
+          {/* 에러 메시지 */}
           {fieldState.error ? (
             <p className="label-text-alt text-error mt-1 px-0" role="alert">
               {fieldState.error.message}

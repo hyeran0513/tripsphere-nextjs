@@ -5,4 +5,6 @@ export const PATH = {
   LOGIN: "/login",
   /* 회원가입 */
   SIGNUP: "/signup",
+  /* 검색 결과 */
+  SEARCH: "/search",
 }

@@ -1,7 +1,7 @@
 import { Suspense } from "react"
 
-import { LoginForm } from "@/components/shared/feature/auth/login-form"
-import { LoginFallback } from "@/components/shared/feature/auth/login-fallback"
+import { LoginForm } from "@/components/shared/feature/auth/login/login-form"
+import { LoginFallback } from "@/components/shared/feature/auth/login/login-fallback"
 
 export default function LoginPage() {
   return (

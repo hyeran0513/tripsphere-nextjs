@@ -38,11 +38,16 @@ export function PasswordField<TFieldValues extends FieldValues>({
       name={name}
       render={({ field, fieldState }) => (
         <div className="form-control w-full">
+          {/* 라벨 */}
           <label className="label py-1" htmlFor={inputId}>
             <span className="label-text font-medium">{label}</span>
           </label>
+
           <div className={`${daisyControlShellClassNames(!!fieldState.error)} w-full`}>
+            {/* 아이콘 */}
             <Icon className="text-base-content/40 size-[1.1em] shrink-0" aria-hidden />
+
+            {/* 비밀번호 입력 필드 */}
             <input
               {...field}
               id={inputId}
@@ -53,6 +58,8 @@ export function PasswordField<TFieldValues extends FieldValues>({
               className="min-w-0 grow border-0 bg-transparent outline-none focus:ring-0"
               disabled={disabled}
             />
+
+            {/* 비밀번호 보기 버튼 */}
             <button
               type="button"
               className="btn btn-ghost btn-xs btn-circle shrink-0 hover:bg-base-200/70"
@@ -68,6 +75,8 @@ export function PasswordField<TFieldValues extends FieldValues>({
               )}
             </button>
           </div>
+
+          {/* 에러 메시지 */}
           {fieldState.error ? (
             <p className="label-text-alt text-error mt-1 px-0" role="alert">
               {fieldState.error.message}
