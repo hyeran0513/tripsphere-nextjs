@@ -7,4 +7,10 @@ export const PATH = {
   SIGNUP: "/signup",
   /* 검색 결과 */
   SEARCH: "/search",
+  /* 숙소 상세 */
+  ACCOMMODATION: "/accommodation",
+  /* 장바구니 */
+  CART: "/cart",
+  /* 결제 */
+  CHECKOUT: "/checkout",
 }

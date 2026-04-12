@@ -1,6 +1,7 @@
 "use client"
 
 import { signOut } from "firebase/auth"
+import { ShoppingCart } from "lucide-react"
 import Link from "next/link"
 
 import { PATH } from "@/constants/path"
@@ -27,6 +28,9 @@ export function Header() {
           <div className="skeleton h-8 w-24" />
         ) : user ? (
           <div className="flex items-center gap-3">
+            <Link href={PATH.CART} className="btn btn-ghost btn-sm" title="장바구니">
+              <ShoppingCart className="size-5" />
+            </Link>
             <span className="text-sm text-base-content/70">{user.displayName || user.email}</span>
             <button type="button" className="btn btn-ghost btn-sm" onClick={handleLogout}>
               로그아웃

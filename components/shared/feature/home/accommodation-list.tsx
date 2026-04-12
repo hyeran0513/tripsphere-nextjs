@@ -1,7 +1,9 @@
 "use client"
 
 import { MapPin, Star } from "lucide-react"
+import Link from "next/link"
 
+import { PATH } from "@/constants/path"
 import type { Accommodation } from "@/types/accommodation"
 
 type AccommodationListProps = {
@@ -47,8 +49,9 @@ export function AccommodationList({
   return (
     <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
       {accommodations.map((item) => (
-        <div
+        <Link
           key={item.id}
+          href={`${PATH.ACCOMMODATION}/${item.id}`}
           className="card border border-base-300 bg-base-100 transition-shadow hover:shadow-md"
         >
           <figure className="h-48 overflow-hidden">
@@ -86,7 +89,7 @@ export function AccommodationList({
               <span className="badge badge-outline badge-sm">{item.type}</span>
             </div>
           </div>
-        </div>
+        </Link>
       ))}
     </div>
   )

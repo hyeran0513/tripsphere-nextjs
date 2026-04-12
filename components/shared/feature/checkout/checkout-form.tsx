@@ -1,0 +1,205 @@
+"use client"
+
+import { useState } from "react"
+import { useRouter, useSearchParams } from "next/navigation"
+import { Clock, Moon, CheckCircle, Wallet } from "lucide-react"
+
+import { PATH } from "@/constants/path"
+import { useAuth } from "@/hooks/auth/use-auth"
+import { usePointsQuery, calculateAvailablePoints } from "@/hooks/queries/use-points-query"
+import { useCreateOrderMutation } from "@/hooks/mutations/use-order-mutation"
+import { useRoomDetailQuery } from "@/hooks/queries/use-room-detail-query"
+
+export function CheckoutForm() {
+  const router = useRouter()
+  const searchParams = useSearchParams()
+  const roomId = searchParams.get("roomId")
+  const bookingType = searchParams.get("type") as "hourly" | "nightly" | null
+
+  const { user, isLoading: authLoading } = useAuth()
+  const { data: room, isLoading: roomLoading } = useRoomDetailQuery(roomId)
+  const { data: points } = usePointsQuery(user?.uid ?? null)
+  const createOrder = useCreateOrderMutation()
+
+  const [selectedTime, setSelectedTime] = useState("14:00")
+  const [duration, setDuration] = useState(4)
+  const [orderComplete, setOrderComplete] = useState(false)
+
+  const availablePoints = points ? calculateAvailablePoints(points) : 0
+  const price =
+    bookingType === "hourly" ? (room?.price_per_hour ?? 0) : (room?.price_per_night ?? 0)
+
+  const canPay = availablePoints >= price && price > 0
+
+  const handleSubmit = async () => {
+    if (!user || !roomId || !canPay) return
+
+    await createOrder.mutateAsync({
+      room_id: roomId,
+      user_id: user.uid,
+      used_points: price,
+      selectedTime: bookingType === "hourly" ? selectedTime : undefined,
+      duration: bookingType === "hourly" ? { hours: duration, minutes: 0 } : undefined,
+    })
+
+    setOrderComplete(true)
+  }
+
+  if (authLoading || roomLoading) {
+    return (
+      <div className="mx-auto max-w-2xl space-y-4 p-4">
+        <div className="skeleton h-8 w-40" />
+        <div className="skeleton h-48 w-full rounded-lg" />
+        <div className="skeleton h-32 w-full rounded-lg" />
+      </div>
+    )
+  }
+
+  if (!user) {
+    router.push(PATH.LOGIN)
+    return null
+  }
+
+  if (!room || !bookingType) {
+    return (
+      <div className="flex flex-col items-center justify-center py-20 text-base-content/50">
+        <p className="text-lg font-medium">예약 정보를 찾을 수 없습니다.</p>
+        <button
+          type="button"
+          className="btn btn-primary btn-sm mt-4"
+          onClick={() => router.push(PATH.HOME)}
+        >
+          홈으로
+        </button>
+      </div>
+    )
+  }
+
+  if (orderComplete) {
+    return (
+      <div className="mx-auto flex max-w-2xl flex-col items-center justify-center py-20">
+        <CheckCircle className="mb-4 size-16 text-success" />
+        <h2 className="text-2xl font-bold">예약이 완료되었습니다!</h2>
+        <p className="mt-2 text-base-content/60">
+          {price.toLocaleString()} 포인트가 사용되었습니다.
+        </p>
+        <button
+          type="button"
+          className="btn btn-primary mt-6"
+          onClick={() => router.push(PATH.HOME)}
+        >
+          홈으로 돌아가기
+        </button>
+      </div>
+    )
+  }
+
+  return (
+    <div className="mx-auto max-w-2xl space-y-6 p-4">
+      <h1 className="text-2xl font-bold">결제하기</h1>
+
+      {/* 객실 정보 */}
+      <div className="card border border-base-300 bg-base-100">
+        <div className="card-body gap-3">
+          <h3 className="card-title text-base">{room.name}</h3>
+          {room.description && <p className="text-sm text-base-content/60">{room.description}</p>}
+          <div className="flex items-center gap-2">
+            {bookingType === "hourly" ? (
+              <span className="badge badge-outline gap-1">
+                <Clock className="size-3" /> 대실
+              </span>
+            ) : (
+              <span className="badge badge-primary gap-1">
+                <Moon className="size-3" /> 숙박
+              </span>
+            )}
+            <span className="badge badge-outline">
+              성인 {room.capacity.adults}인 / 아동 {room.capacity.children}인
+            </span>
+          </div>
+        </div>
+      </div>
+
+      {/* 대실 옵션 */}
+      {bookingType === "hourly" && (
+        <div className="card border border-base-300 bg-base-100">
+          <div className="card-body gap-4">
+            <h3 className="font-semibold">대실 옵션</h3>
+            <div className="form-control">
+              <label className="label" htmlFor="selectedTime">
+                <span className="label-text">입실 시간</span>
+              </label>
+              <input
+                id="selectedTime"
+                type="time"
+                className="input input-bordered w-full"
+                value={selectedTime}
+                onChange={(e) => setSelectedTime(e.target.value)}
+              />
+            </div>
+            <div className="form-control">
+              <label className="label" htmlFor="duration">
+                <span className="label-text">이용 시간</span>
+              </label>
+              <select
+                id="duration"
+                className="select select-bordered w-full"
+                value={duration}
+                onChange={(e) => setDuration(Number(e.target.value))}
+              >
+                {[2, 3, 4, 5, 6].map((h) => (
+                  <option key={h} value={h}>
+                    {h}시간
+                  </option>
+                ))}
+              </select>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* 포인트 결제 */}
+      <div className="card border border-base-300 bg-base-100">
+        <div className="card-body gap-4">
+          <h3 className="font-semibold">결제 정보</h3>
+
+          <div className="flex items-center justify-between">
+            <span className="flex items-center gap-1 text-base-content/70">
+              <Wallet className="size-4" />
+              보유 포인트
+            </span>
+            <span className="font-semibold">{availablePoints.toLocaleString()}P</span>
+          </div>
+
+          <div className="divider my-0" />
+
+          <div className="flex items-center justify-between">
+            <span className="text-base-content/70">결제 금액</span>
+            <span className="text-lg font-bold text-primary">{price.toLocaleString()}P</span>
+          </div>
+
+          <div className="flex items-center justify-between">
+            <span className="text-base-content/70">결제 후 잔액</span>
+            <span className="font-semibold">{(availablePoints - price).toLocaleString()}P</span>
+          </div>
+
+          {!canPay && (
+            <div className="alert alert-error">
+              <span>포인트가 부족합니다.</span>
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* 결제 버튼 */}
+      <button
+        type="button"
+        className="btn btn-primary btn-block btn-lg"
+        disabled={!canPay || createOrder.isPending}
+        onClick={handleSubmit}
+      >
+        {createOrder.isPending ? "결제 중..." : `${price.toLocaleString()}P 결제하기`}
+      </button>
+    </div>
+  )
+}
