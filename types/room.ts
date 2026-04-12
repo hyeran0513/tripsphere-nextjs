@@ -40,9 +40,14 @@ export function getRoomTypeLabel(type: string): string {
   return labels[type] ?? type
 }
 
-/** 할인 적용된 최종 가격 계산 */
+/** 할인 적용된 최종 가격 계산 (discount_rate: 0.1 = 10%) */
 export function getDiscountedPrice(room: Room): number {
-  return Math.round(room.original_price * (1 - room.discount_rate / 100))
+  return Math.round(room.original_price * (1 - room.discount_rate))
+}
+
+/** 할인율을 퍼센트 문자열로 변환 (0.1 → "10%") */
+export function formatDiscountRate(rate: number): string {
+  return `${Math.round(rate * 100)}%`
 }
 
 /** Firestore Timestamp 또는 문자열을 시간 문자열로 변환 */

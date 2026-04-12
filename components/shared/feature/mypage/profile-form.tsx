@@ -38,7 +38,7 @@ function ProfileFormFields({ user, profile }: ProfileFormFieldsProps) {
 
   return (
     <div className="space-y-6">
-      <h2 className="text-2xl font-bold">회원 정보 수정</h2>
+      <h2 className="text-2xl font-bold">회원정보 수정</h2>
 
       <form onSubmit={handleSubmit} className="card w-full border border-base-300 bg-base-100">
         <div className="card-body gap-4">

@@ -24,10 +24,7 @@ export function BookingSearchBox({ onSearch }: BookingSearchBoxProps) {
   return (
     <div className="card border border-base-300 bg-base-100 sticky top-4">
       <div className="card-body gap-4 p-4">
-        <h3 className="flex items-center gap-2 font-bold">
-          <Search className="size-4" />
-          예약 조건
-        </h3>
+        <h3 className="flex items-center gap-2 font-bold">예약 조건</h3>
 
         {/* 체크인 */}
         <DatePickerField label="체크인" value={checkIn} onChange={setCheckIn} minDate={today} />

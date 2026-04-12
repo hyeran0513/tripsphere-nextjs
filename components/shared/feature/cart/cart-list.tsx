@@ -1,11 +1,11 @@
 "use client"
 
 import Image from "next/image"
-import { ShoppingCart, Trash2 } from "lucide-react"
+import { Heart, Trash2 } from "lucide-react"
 import { useRouter } from "next/navigation"
 
 import { PATH } from "@/constants/path"
-import { getStayTypeLabel } from "@/types/room"
+import { getStayTypeLabel, formatDiscountRate } from "@/types/room"
 import { useAuth } from "@/hooks/auth/use-auth"
 import { useCartQuery } from "@/hooks/queries/use-cart-query"
 import { useRemoveFromCartMutation } from "@/hooks/mutations/use-cart-mutation"
@@ -30,7 +30,7 @@ export function CartList() {
   if (!user) {
     return (
       <div className="flex flex-col items-center justify-center py-20 text-base-content/50">
-        <ShoppingCart className="mb-3 size-12" />
+        <Heart className="mb-3 size-12" />
         <p className="text-lg font-medium">로그인이 필요합니다</p>
         <button
           type="button"
@@ -46,8 +46,8 @@ export function CartList() {
   if (!cartItems || cartItems.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center py-20 text-base-content/50">
-        <ShoppingCart className="mb-3 size-12" />
-        <p className="text-lg font-medium">장바구니가 비어있습니다</p>
+        <Heart className="mb-3 size-12" />
+        <p className="text-lg font-medium">찜 목록이 비어있습니다</p>
         <p className="text-sm">마음에 드는 숙소를 찾아보세요.</p>
       </div>
     )
@@ -60,13 +60,13 @@ export function CartList() {
 
   return (
     <div className="mx-auto max-w-6xl space-y-4 p-4">
-      <h1 className="text-2xl font-bold">장바구니 ({cartItems.length})</h1>
+      <h1 className="text-2xl font-bold">찜 목록 ({cartItems.length})</h1>
 
       <div className="flex flex-col gap-4">
         {cartItems.map((item) => {
           const hasDiscount = (item.room?.discount_rate ?? 0) > 0
           const discountedPrice = item.room
-            ? Math.round(item.room.original_price * (1 - item.room.discount_rate / 100))
+            ? Math.round(item.room.original_price * (1 - item.room.discount_rate))
             : 0
 
           return (
@@ -109,7 +109,7 @@ export function CartList() {
                     {hasDiscount && (
                       <>
                         <span className="text-sm font-bold text-error">
-                          {item.room.discount_rate}%
+                          {formatDiscountRate(item.room.discount_rate)}
                         </span>
                         <span className="text-sm text-base-content/40 line-through">
                           {item.room.original_price.toLocaleString()}원

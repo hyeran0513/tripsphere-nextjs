@@ -39,6 +39,7 @@ async function fetchOrders(userId: string): Promise<OrderWithDetails[]> {
         payment_status: data.payment_status,
         used_points: data.used_points,
         cancel_reason: data.cancel_reason,
+        reviewed: data.reviewed ?? false,
         selectedTime: data.selectedTime,
         duration: data.duration,
       }
@@ -61,7 +62,7 @@ async function fetchOrders(userId: string): Promise<OrderWithDetails[]> {
           }
         }
       } catch {
-        // 객실 정보를 가져오지 못해도 주문은 표시
+        // 객실 정보를 가져오지 못해도 예약은 표시
       }
 
       return order

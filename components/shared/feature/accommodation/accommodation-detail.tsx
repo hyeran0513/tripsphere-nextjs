@@ -3,6 +3,7 @@
 import { useState } from "react"
 import { MapPin, Star, Phone, Mail } from "lucide-react"
 
+import { getAccommodationTypeLabel } from "@/types/accommodation"
 import { useAccommodationDetailQuery } from "@/hooks/queries/use-accommodation-detail-query"
 import { useRoomsQuery } from "@/hooks/queries/use-rooms-query"
 import { useReviewsQuery } from "@/hooks/queries/use-reviews-query"
@@ -68,7 +69,9 @@ export function AccommodationDetail({ accommodationId }: AccommodationDetailProp
         <div className="flex items-start justify-between gap-4">
           {/* 타입 */}
           <div>
-            <span className="badge badge-outline badge-sm mb-2">{accommodation.type}</span>
+            <span className="badge badge-outline badge-sm mb-2">
+              {getAccommodationTypeLabel(accommodation.type ?? "")}
+            </span>
             <h1 className="text-2xl font-bold">{accommodation.name}</h1>
           </div>
 

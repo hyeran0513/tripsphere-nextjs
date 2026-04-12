@@ -9,9 +9,9 @@ export const PATH = {
   SEARCH: "/search",
   /* 숙소 상세 */
   ACCOMMODATION: "/accommodation",
-  /* 장바구니 */
+  /* 찜 */
   CART: "/cart",
-  /* 주문 내역 */
+  /* 예약 내역 */
   ORDERS: "/orders",
   /* 포인트 */
   POINTS: "/points",
@@ -19,6 +19,8 @@ export const PATH = {
   CHECKOUT: "/checkout",
   /* 마이페이지 */
   MYPAGE: "/mypage",
-  /* 회원 정보 수정 */
+  /* 회원정보 수정 */
   PROFILE: "/mypage/profile",
+  /* 이용약관 */
+  TERMS: "/terms",
 }

@@ -3,7 +3,7 @@
 import { useState } from "react"
 import Image from "next/image"
 import { useRouter } from "next/navigation"
-import { ClipboardList, XCircle } from "lucide-react"
+import { ClipboardList, Pencil, Star } from "lucide-react"
 import { getStayTypeLabel } from "@/types/room"
 import { format } from "date-fns"
 
@@ -11,20 +11,103 @@ import { PATH } from "@/constants/path"
 import { useAuth } from "@/hooks/auth/use-auth"
 import { useOrdersQuery, type OrderWithDetails } from "@/hooks/queries/use-orders-query"
 import { useCancelOrderMutation } from "@/hooks/mutations/use-order-mutation"
+import { useCreateReviewMutation } from "@/hooks/mutations/use-review-mutation"
 
 const STATUS_LABEL: Record<string, { text: string; className: string }> = {
-  completed: { text: "결제 완료", className: "badge-success" },
+  completed: { text: "예약 완료", className: "badge-success" },
   pending: { text: "결제 대기", className: "badge-warning" },
   cancelled: { text: "취소됨", className: "badge-error" },
 }
 
+function ReviewModal({ order, onClose }: { order: OrderWithDetails; onClose: () => void }) {
+  const [rating, setRating] = useState(5)
+  const [comment, setComment] = useState("")
+  const createReview = useCreateReviewMutation()
+
+  const handleSubmit = async () => {
+    if (!order.room?.accommodation_id || !comment.trim()) return
+
+    await createReview.mutateAsync({
+      accommodation_id: order.room.accommodation_id,
+      user_id: order.user_id,
+      order_id: order.id,
+      rating,
+      comment: comment.trim(),
+    })
+    onClose()
+  }
+
+  return (
+    <dialog className="modal modal-open">
+      <div className="modal-box">
+        <h3 className="text-lg font-bold">리뷰 작성</h3>
+        <p className="mt-1 text-sm text-base-content/60">
+          {order.room?.accommodation_name} · {order.room?.name}
+        </p>
+
+        {/* 별점 */}
+        <div className="mt-4">
+          <label className="label">
+            <span className="label-text font-medium">별점</span>
+          </label>
+          <div className="flex gap-1">
+            {[1, 2, 3, 4, 5].map((v) => (
+              <button key={v} type="button" className="cursor-pointer" onClick={() => setRating(v)}>
+                <Star
+                  className={`size-7 ${v <= rating ? "fill-warning text-warning" : "text-base-300"}`}
+                />
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* 내용 */}
+        <div className="form-control mt-4">
+          <label className="label" htmlFor="reviewComment">
+            <span className="label-text font-medium">리뷰 내용</span>
+          </label>
+          <textarea
+            id="reviewComment"
+            className="textarea textarea-bordered w-full"
+            rows={4}
+            placeholder="숙소 이용 후기를 작성해주세요"
+            value={comment}
+            onChange={(e) => setComment(e.target.value)}
+          />
+        </div>
+
+        <div className="modal-action">
+          <button type="button" className="btn btn-ghost btn-sm" onClick={onClose}>
+            닫기
+          </button>
+          <button
+            type="button"
+            className="btn btn-primary btn-sm"
+            disabled={!comment.trim() || createReview.isPending}
+            onClick={handleSubmit}
+          >
+            {createReview.isPending ? "작성 중..." : "리뷰 등록"}
+          </button>
+        </div>
+      </div>
+      <form method="dialog" className="modal-backdrop">
+        <button type="button" onClick={onClose}>
+          close
+        </button>
+      </form>
+    </dialog>
+  )
+}
+
 function OrderCard({ order }: { order: OrderWithDetails }) {
   const [showCancelModal, setShowCancelModal] = useState(false)
+  const [showReviewModal, setShowReviewModal] = useState(false)
   const [cancelReason, setCancelReason] = useState("")
   const cancelOrder = useCancelOrderMutation()
 
   const status = STATUS_LABEL[order.payment_status] ?? STATUS_LABEL.pending
   const orderDate = format(new Date(order.order_date), "yyyy.MM.dd HH:mm")
+  const canReview = order.payment_status === "completed" && !order.reviewed
 
   const handleCancel = async () => {
     await cancelOrder.mutateAsync({
@@ -67,6 +150,7 @@ function OrderCard({ order }: { order: OrderWithDetails }) {
             <div className="flex items-center gap-2">
               <h3 className="card-title text-base">{order.room?.name ?? "객실 정보 없음"}</h3>
               <span className={`badge badge-sm ${status.className}`}>{status.text}</span>
+              {order.reviewed && <span className="badge badge-ghost badge-sm">리뷰 완료</span>}
             </div>
           </div>
 
@@ -84,7 +168,7 @@ function OrderCard({ order }: { order: OrderWithDetails }) {
             )}
           </div>
 
-          <div className="text-xs text-base-content/50">주문일: {orderDate}</div>
+          <div className="text-xs text-base-content/50">예약일: {orderDate}</div>
 
           <div className="flex items-center gap-2">
             <span className="text-lg font-bold">{order.used_points.toLocaleString()}P</span>
@@ -98,17 +182,29 @@ function OrderCard({ order }: { order: OrderWithDetails }) {
         {/* 버튼 (오른쪽) */}
         {order.payment_status === "completed" && (
           <div className="flex flex-col justify-center gap-2 border-l border-base-300 p-4">
+            {canReview && (
+              <button
+                type="button"
+                className="btn btn-primary btn-sm"
+                onClick={() => setShowReviewModal(true)}
+              >
+                <Pencil className="size-3.5" />
+                리뷰 작성
+              </button>
+            )}
             <button
               type="button"
               className="btn btn-outline btn-error btn-sm"
               onClick={() => setShowCancelModal(true)}
             >
-              <XCircle className="size-3.5" />
               예약 취소
             </button>
           </div>
         )}
       </div>
+
+      {/* 리뷰 모달 */}
+      {showReviewModal && <ReviewModal order={order} onClose={() => setShowReviewModal(false)} />}
 
       {/* 취소 모달 */}
       {showCancelModal && (
@@ -198,7 +294,7 @@ export function OrderList() {
     return (
       <div className="flex flex-col items-center justify-center py-20 text-base-content/50">
         <ClipboardList className="mb-3 size-12" />
-        <p className="text-lg font-medium">주문 내역이 없습니다</p>
+        <p className="text-lg font-medium">예약 내역이 없습니다</p>
         <p className="text-sm">숙소를 검색하고 예약해보세요.</p>
       </div>
     )
@@ -206,7 +302,7 @@ export function OrderList() {
 
   return (
     <div className="mx-auto max-w-6xl space-y-4 p-4">
-      <h1 className="text-2xl font-bold">주문 내역 ({orders.length})</h1>
+      <h1 className="text-2xl font-bold">예약 내역 ({orders.length})</h1>
 
       <div className="flex flex-col gap-4">
         {orders.map((order) => (

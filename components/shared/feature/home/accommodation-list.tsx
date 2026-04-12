@@ -11,7 +11,7 @@ import { db } from "@/lib/firebase/client"
 import { getAccommodationTypeLabel } from "@/types/accommodation"
 import type { Accommodation } from "@/types/accommodation"
 import type { Room } from "@/types/room"
-import { getDiscountedPrice, getStayTypeLabel } from "@/types/room"
+import { getDiscountedPrice, formatDiscountRate, getStayTypeLabel } from "@/types/room"
 
 type AccommodationListProps = {
   accommodations: Accommodation[]
@@ -144,7 +144,7 @@ export function AccommodationList({
                       {minPriceRoom.discount_rate > 0 && (
                         <>
                           <span className="text-xs font-bold text-error">
-                            {minPriceRoom.discount_rate}%
+                            {formatDiscountRate(minPriceRoom.discount_rate)}
                           </span>
                           <span className="text-xs text-base-content/40 line-through">
                             {minPriceRoom.original_price.toLocaleString()}원

@@ -9,7 +9,7 @@ import { useAuth } from "@/hooks/auth/use-auth"
 import { usePointsQuery, calculateAvailablePoints } from "@/hooks/queries/use-points-query"
 import { useCreateOrderMutation } from "@/hooks/mutations/use-order-mutation"
 import { useRoomDetailQuery } from "@/hooks/queries/use-room-detail-query"
-import { getDiscountedPrice, getStayTypeLabel } from "@/types/room"
+import { getDiscountedPrice, formatDiscountRate, getStayTypeLabel } from "@/types/room"
 
 export function CheckoutForm() {
   const router = useRouter()
@@ -89,7 +89,7 @@ export function CheckoutForm() {
             className="btn btn-primary"
             onClick={() => router.push(PATH.ORDERS)}
           >
-            주문 내역 보기
+            예약 내역 보기
           </button>
           <button type="button" className="btn btn-ghost" onClick={() => router.push(PATH.HOME)}>
             홈으로
@@ -117,7 +117,9 @@ export function CheckoutForm() {
           <div className="flex items-center gap-2">
             {room.discount_rate > 0 && (
               <>
-                <span className="badge badge-error badge-sm font-bold">{room.discount_rate}%</span>
+                <span className="badge badge-error badge-sm font-bold">
+                  {formatDiscountRate(room.discount_rate)}
+                </span>
                 <span className="text-sm text-base-content/40 line-through">
                   {room.original_price.toLocaleString()}원
                 </span>

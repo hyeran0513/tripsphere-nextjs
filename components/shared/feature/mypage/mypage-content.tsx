@@ -2,7 +2,7 @@
 
 import { useRouter } from "next/navigation"
 import { signOut } from "firebase/auth"
-import { ClipboardList, LogOut, ShoppingCart, UserPen, Wallet } from "lucide-react"
+import { ClipboardList, Heart, LogOut, UserPen, Wallet } from "lucide-react"
 import Link from "next/link"
 
 import { PATH } from "@/constants/path"
@@ -13,9 +13,9 @@ import { auth } from "@/lib/firebase/client"
 
 const MENU_ITEMS = [
   { label: "포인트 내역", href: PATH.POINTS, icon: Wallet },
-  { label: "주문 내역", href: PATH.ORDERS, icon: ClipboardList },
-  { label: "장바구니", href: PATH.CART, icon: ShoppingCart },
-  { label: "회원 정보 수정", href: PATH.PROFILE, icon: UserPen },
+  { label: "예약 내역", href: PATH.ORDERS, icon: ClipboardList },
+  { label: "찜 목록", href: PATH.CART, icon: Heart },
+  { label: "회원정보 수정", href: PATH.PROFILE, icon: UserPen },
 ]
 
 export function MypageContent() {

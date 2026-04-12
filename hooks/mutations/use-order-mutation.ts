@@ -17,7 +17,7 @@ type CreateOrderParams = {
 }
 
 async function createOrder(params: CreateOrderParams) {
-  // 주문 생성
+  // 예약 생성
   const orderRef = await addDoc(collection(db, "orders"), {
     room_id: params.room_id,
     user_id: params.user_id,
@@ -65,7 +65,7 @@ type CancelOrderParams = {
 }
 
 async function cancelOrder(params: CancelOrderParams) {
-  // 주문 상태 변경
+  // 예약 상태 변경
   await updateDoc(doc(db, "orders", params.order_id), {
     payment_status: "cancelled",
     cancel_reason: params.cancel_reason ?? null,

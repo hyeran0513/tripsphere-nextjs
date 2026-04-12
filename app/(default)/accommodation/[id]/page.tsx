@@ -7,7 +7,7 @@ export default function AccommodationPage({ params }: { params: Promise<{ id: st
   const { id } = use(params)
 
   return (
-    <main className="min-h-screen bg-base-200 pb-12">
+    <main className="min-h-screen bg-base-100 pb-12">
       <AccommodationDetail accommodationId={id} />
     </main>
   )
