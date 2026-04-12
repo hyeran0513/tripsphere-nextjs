@@ -14,7 +14,9 @@ export function LoginForm() {
   return (
     <div className="card w-full max-w-md border border-base-300/80 bg-base-100">
       <div className="card-body gap-6 p-6 sm:p-8">
-        <h1 className="card-title text-2xl leading-tight">로그인</h1>
+        <Link href={PATH.HOME} className="flex items-center text-2xl font-bold">
+          <span className="text-primary">TRIP</span>SPHERE
+        </Link>
 
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5">
           <fieldset className="fieldset space-y-4">
@@ -63,7 +65,7 @@ export function LoginForm() {
 
         <p className="text-center text-sm text-base-content/70">
           계정이 없으신가요?{" "}
-          <Link href={PATH.SIGNUP} className="link link-primary font-medium">
+          <Link href={PATH.SIGNUP} className="font-medium text-primary hover:underline">
             회원가입
           </Link>
         </p>

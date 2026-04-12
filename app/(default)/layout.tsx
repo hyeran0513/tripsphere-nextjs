@@ -9,7 +9,7 @@ export default function DefaultLayout({
   return (
     <>
       <Header />
-      {children}
+      <main className="min-h-screen bg-base-100 pb-12">{children}</main>
       <Footer />
     </>
   )

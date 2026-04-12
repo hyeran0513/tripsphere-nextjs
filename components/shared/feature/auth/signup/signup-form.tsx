@@ -14,7 +14,9 @@ export function SignUpForm() {
   return (
     <div className="card w-full max-w-md border border-base-300/80 bg-base-100">
       <div className="card-body gap-6 p-6 sm:p-8">
-        <h1 className="card-title text-2xl leading-tight">회원가입</h1>
+        <Link href={PATH.HOME} className="flex items-center text-2xl font-bold">
+          <span className="text-primary">TRIP</span>SPHERE
+        </Link>
 
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5">
           <fieldset className="fieldset space-y-4">
@@ -105,8 +107,9 @@ export function SignUpForm() {
         <div className="divider text-base-content/50 my-0 text-xs">또는</div>
 
         <p className="text-center text-sm text-base-content/70">
-          <Link href={PATH.HOME} className="link link-primary font-medium">
-            홈으로
+          이미 계정이 있으신가요?{" "}
+          <Link href={PATH.LOGIN} className="link link-primary font-medium">
+            로그인
           </Link>
         </p>
       </div>

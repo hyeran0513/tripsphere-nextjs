@@ -107,11 +107,11 @@ export function AccommodationImages({ images, name }: AccommodationImagesProps) 
   return (
     <>
       <div className="relative overflow-hidden rounded-lg">
-        <div className="grid h-72 grid-cols-4 grid-rows-2 gap-1 sm:h-96">
-          {/* 왼쪽 큰 이미지 */}
+        <div className="flex h-80 gap-1 sm:h-[28rem]">
+          {/* 왼쪽 */}
           <button
             type="button"
-            className="relative col-span-2 row-span-2 cursor-pointer overflow-hidden"
+            className="relative h-full flex-1 cursor-pointer overflow-hidden"
             onClick={() => openModal(0)}
           >
             <Image
@@ -119,55 +119,55 @@ export function AccommodationImages({ images, name }: AccommodationImagesProps) 
               alt={`${name} 1`}
               fill
               className="object-cover transition-transform hover:scale-105"
-              sizes="50vw"
+              sizes="33vw"
               unoptimized
             />
           </button>
 
-          {/* 가운데 위 */}
-          <button
-            type="button"
-            className="relative col-span-1 row-span-1 cursor-pointer overflow-hidden"
-            onClick={() => openModal(img1 ? 1 : 0)}
-          >
-            {img1 ? (
-              <Image
-                src={img1}
-                alt={`${name} 2`}
-                fill
-                className="object-cover transition-transform hover:scale-105"
-                sizes="25vw"
-                unoptimized
-              />
-            ) : (
-              <div className="flex h-full w-full items-center justify-center bg-base-200 text-base-content/20" />
-            )}
-          </button>
-
-          {/* 가운데 아래 */}
-          <button
-            type="button"
-            className="relative col-span-1 row-span-1 cursor-pointer overflow-hidden"
-            onClick={() => openModal(img2 ? 2 : 0)}
-          >
-            {img2 ? (
-              <Image
-                src={img2}
-                alt={`${name} 3`}
-                fill
-                className="object-cover transition-transform hover:scale-105"
-                sizes="25vw"
-                unoptimized
-              />
-            ) : (
-              <div className="flex h-full w-full items-center justify-center bg-base-200 text-base-content/20" />
-            )}
-          </button>
+          {/* 가운데 위/아래 */}
+          <div className="flex h-full flex-1 flex-col gap-1">
+            <button
+              type="button"
+              className="relative h-1/2 w-full cursor-pointer overflow-hidden"
+              onClick={() => openModal(img1 ? 1 : 0)}
+            >
+              {img1 ? (
+                <Image
+                  src={img1}
+                  alt={`${name} 2`}
+                  fill
+                  className="object-cover transition-transform hover:scale-105"
+                  sizes="33vw"
+                  unoptimized
+                />
+              ) : (
+                <div className="h-full w-full bg-base-200" />
+              )}
+            </button>
+            <button
+              type="button"
+              className="relative h-1/2 w-full cursor-pointer overflow-hidden"
+              onClick={() => openModal(img2 ? 2 : 0)}
+            >
+              {img2 ? (
+                <Image
+                  src={img2}
+                  alt={`${name} 3`}
+                  fill
+                  className="object-cover transition-transform hover:scale-105"
+                  sizes="33vw"
+                  unoptimized
+                />
+              ) : (
+                <div className="h-full w-full bg-base-200" />
+              )}
+            </button>
+          </div>
 
           {/* 오른쪽 */}
           <button
             type="button"
-            className="relative col-span-1 row-span-2 cursor-pointer overflow-hidden"
+            className="relative h-full flex-1 cursor-pointer overflow-hidden"
             onClick={() => openModal(img3 ? 3 : 0)}
           >
             {img3 ? (
@@ -176,11 +176,11 @@ export function AccommodationImages({ images, name }: AccommodationImagesProps) 
                 alt={`${name} 4`}
                 fill
                 className="object-cover transition-transform hover:scale-105"
-                sizes="25vw"
+                sizes="33vw"
                 unoptimized
               />
             ) : (
-              <div className="flex h-full w-full items-center justify-center bg-base-200 text-base-content/20" />
+              <div className="h-full w-full bg-base-200" />
             )}
           </button>
         </div>

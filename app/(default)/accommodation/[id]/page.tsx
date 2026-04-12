@@ -6,9 +6,5 @@ import { AccommodationDetail } from "@/components/shared/feature/accommodation/a
 export default function AccommodationPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params)
 
-  return (
-    <main className="min-h-screen bg-base-100 pb-12">
-      <AccommodationDetail accommodationId={id} />
-    </main>
-  )
+  return <AccommodationDetail accommodationId={id} />
 }

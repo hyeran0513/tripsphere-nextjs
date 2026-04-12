@@ -15,10 +15,8 @@ function CheckoutFallback() {
 
 export default function CheckoutPage() {
   return (
-    <main className="min-h-screen bg-base-100 pb-12">
-      <Suspense fallback={<CheckoutFallback />}>
-        <CheckoutForm />
-      </Suspense>
-    </main>
+    <Suspense fallback={<CheckoutFallback />}>
+      <CheckoutForm />
+    </Suspense>
   )
 }

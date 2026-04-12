@@ -14,9 +14,9 @@ import { useCancelOrderMutation } from "@/hooks/mutations/use-order-mutation"
 import { useCreateReviewMutation } from "@/hooks/mutations/use-review-mutation"
 
 const STATUS_LABEL: Record<string, { text: string; className: string }> = {
-  completed: { text: "예약 완료", className: "badge-success" },
-  pending: { text: "결제 대기", className: "badge-warning" },
-  cancelled: { text: "취소됨", className: "badge-error" },
+  completed: { text: "예약 완료", className: "badge-outline" },
+  pending: { text: "결제 대기", className: "badge-outline" },
+  cancelled: { text: "취소됨", className: "badge-outline" },
 }
 
 function ReviewModal({ order, onClose }: { order: OrderWithDetails; onClose: () => void }) {
@@ -141,66 +141,61 @@ function OrderCard({ order }: { order: OrderWithDetails }) {
           )}
         </figure>
 
-        {/* 정보 (중앙) */}
-        <div className="card-body flex-1 gap-2 p-4">
-          <div>
+        {/* 정보 (중앙 + 오른쪽) */}
+        <div className="flex flex-1 items-center justify-between gap-4 p-4">
+          {/* 왼쪽 정보 */}
+          <div className="flex flex-col gap-1">
             {order.room?.accommodation_name && (
               <p className="text-xs text-base-content/50">{order.room.accommodation_name}</p>
             )}
-            <div className="flex items-center gap-2">
-              <h3 className="card-title text-base">{order.room?.name ?? "객실 정보 없음"}</h3>
+            <h3 className="text-base font-semibold">{order.room?.name ?? "객실 정보 없음"}</h3>
+            <div className="flex flex-wrap items-center gap-2">
               <span className={`badge badge-sm ${status.className}`}>{status.text}</span>
+              {order.room?.stay_type && (
+                <span className="badge badge-outline badge-sm">
+                  {getStayTypeLabel(order.room.stay_type)}
+                </span>
+              )}
               {order.reviewed && <span className="badge badge-ghost badge-sm">리뷰 완료</span>}
             </div>
-          </div>
-
-          <div className="flex flex-wrap items-center gap-2 text-sm">
-            {order.room?.stay_type && (
-              <span className="badge badge-outline text-xs">
-                {getStayTypeLabel(order.room.stay_type)}
-              </span>
-            )}
-            {order.selectedTime && (
-              <span className="text-xs text-base-content/50">입실 {order.selectedTime}</span>
-            )}
-            {order.duration?.hours && (
-              <span className="text-xs text-base-content/50">{order.duration.hours}시간</span>
+            <div className="mt-1 flex flex-wrap items-center justify-between gap-3">
+              <div className="flex items-center gap-3 text-xs text-base-content/50">
+                <span>예약일: {orderDate}</span>
+                {order.selectedTime && <span>입실 {order.selectedTime}</span>}
+                {order.duration?.hours && <span>{order.duration.hours}시간</span>}
+              </div>
+              <span className="text-lg font-bold">{order.used_points.toLocaleString()}P</span>
+            </div>
+            {order.cancel_reason && (
+              <p className="mt-1 text-xs text-error">취소 사유: {order.cancel_reason}</p>
             )}
           </div>
 
-          <div className="text-xs text-base-content/50">예약일: {orderDate}</div>
-
-          <div className="flex items-center gap-2">
-            <span className="text-lg font-bold">{order.used_points.toLocaleString()}P</span>
+          {/* 오른쪽 버튼 */}
+          <div className="flex shrink-0 flex-col items-end gap-2">
+            {order.payment_status === "completed" && (
+              <div className="flex flex-col gap-1">
+                {canReview && (
+                  <button
+                    type="button"
+                    className="btn btn-primary btn-sm"
+                    onClick={() => setShowReviewModal(true)}
+                  >
+                    <Pencil className="size-3.5" />
+                    리뷰 작성
+                  </button>
+                )}
+                <button
+                  type="button"
+                  className="btn btn-outline btn-error btn-sm"
+                  onClick={() => setShowCancelModal(true)}
+                >
+                  예약 취소
+                </button>
+              </div>
+            )}
           </div>
-
-          {order.cancel_reason && (
-            <p className="text-xs text-error">취소 사유: {order.cancel_reason}</p>
-          )}
         </div>
-
-        {/* 버튼 (오른쪽) */}
-        {order.payment_status === "completed" && (
-          <div className="flex flex-col justify-center gap-2 border-l border-base-300 p-4">
-            {canReview && (
-              <button
-                type="button"
-                className="btn btn-primary btn-sm"
-                onClick={() => setShowReviewModal(true)}
-              >
-                <Pencil className="size-3.5" />
-                리뷰 작성
-              </button>
-            )}
-            <button
-              type="button"
-              className="btn btn-outline btn-error btn-sm"
-              onClick={() => setShowCancelModal(true)}
-            >
-              예약 취소
-            </button>
-          </div>
-        )}
       </div>
 
       {/* 리뷰 모달 */}

@@ -5,12 +5,21 @@ import { useState } from "react"
 
 import { PATH } from "@/constants/path"
 
+function formatDate(date: Date): string {
+  return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`
+}
+
 export function useSearchForm() {
   const router = useRouter()
-  const [city, setCity] = useState("")
+
+  const today = new Date()
+  const tomorrow = new Date(today)
+  tomorrow.setDate(tomorrow.getDate() + 1)
+
+  const [city, setCity] = useState("서울")
   const [subCity, setSubCity] = useState("")
-  const [checkIn, setCheckIn] = useState("")
-  const [checkOut, setCheckOut] = useState("")
+  const [checkIn, setCheckIn] = useState(formatDate(today))
+  const [checkOut, setCheckOut] = useState(formatDate(tomorrow))
   const [guests, setGuests] = useState(1)
 
   const handleSearch = () => {
