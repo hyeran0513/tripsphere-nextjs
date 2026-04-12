@@ -5,8 +5,9 @@ export type CartItem = {
   created_at: string
   room?: {
     name: string
-    price_per_hour?: number
-    price_per_night?: number
+    original_price: number
+    discount_rate: number
+    stay_type: string
     accommodation_name?: string
     image?: string
   }

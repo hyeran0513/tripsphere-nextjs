@@ -1,9 +1,10 @@
 "use client"
 
-import { ShoppingCart, Trash2, Clock, Moon } from "lucide-react"
+import { ShoppingCart, Trash2 } from "lucide-react"
 import { useRouter } from "next/navigation"
 
 import { PATH } from "@/constants/path"
+import { getStayTypeLabel } from "@/types/room"
 import { useAuth } from "@/hooks/auth/use-auth"
 import { useCartQuery } from "@/hooks/queries/use-cart-query"
 import { useRemoveFromCartMutation } from "@/hooks/mutations/use-cart-mutation"
@@ -16,7 +17,7 @@ export function CartList() {
 
   if (authLoading || isLoading) {
     return (
-      <div className="mx-auto max-w-3xl space-y-4 p-4">
+      <div className="mx-auto max-w-6xl space-y-4 p-4">
         <div className="skeleton h-8 w-40" />
         {Array.from({ length: 3 }).map((_, i) => (
           <div key={i} className="skeleton h-32 w-full rounded-lg" />
@@ -51,84 +52,86 @@ export function CartList() {
     )
   }
 
-  const handleCheckout = (roomId: string, type: "hourly" | "nightly") => {
-    const params = new URLSearchParams({ roomId, type })
+  const handleCheckout = (roomId: string, stayType: string) => {
+    const params = new URLSearchParams({ roomId, type: stayType })
     router.push(`${PATH.CHECKOUT}?${params.toString()}`)
   }
 
   return (
-    <div className="mx-auto max-w-3xl space-y-4 p-4">
+    <div className="mx-auto max-w-6xl space-y-4 p-4">
       <h1 className="text-2xl font-bold">장바구니 ({cartItems.length})</h1>
 
       <div className="flex flex-col gap-4">
-        {cartItems.map((item) => (
-          <div key={item.id} className="card card-side border border-base-300 bg-base-100">
-            <figure className="w-32 shrink-0 sm:w-40">
-              {item.room?.image ? (
-                <img
-                  src={item.room.image}
-                  alt={item.room?.name ?? "객실"}
-                  className="h-full w-full object-cover"
-                />
-              ) : (
-                <div className="flex h-full w-full items-center justify-center bg-base-200 text-xs text-base-content/30">
-                  이미지 없음
-                </div>
-              )}
-            </figure>
+        {cartItems.map((item) => {
+          const hasDiscount = (item.room?.discount_rate ?? 0) > 0
+          const discountedPrice = item.room
+            ? Math.round(item.room.original_price * (1 - item.room.discount_rate / 100))
+            : 0
 
-            <div className="card-body gap-2 p-4">
-              {item.room?.accommodation_name && (
-                <p className="text-xs text-base-content/50">{item.room.accommodation_name}</p>
-              )}
-              <h3 className="card-title text-base">{item.room?.name ?? "객실 정보 없음"}</h3>
+          return (
+            <div key={item.id} className="card card-side border border-base-300 bg-base-100">
+              <figure className="w-32 shrink-0 sm:w-40">
+                {item.room?.image ? (
+                  <img
+                    src={item.room.image}
+                    alt={item.room?.name ?? "객실"}
+                    className="h-full w-full object-cover"
+                  />
+                ) : (
+                  <div className="flex h-full w-full items-center justify-center bg-base-200 text-xs text-base-content/30">
+                    이미지 없음
+                  </div>
+                )}
+              </figure>
 
-              <div className="flex flex-col gap-1 text-sm">
-                {item.room?.price_per_hour != null && (
-                  <span className="flex items-center gap-1 text-base-content/70">
-                    <Clock className="size-3.5" />
-                    대실 {item.room.price_per_hour.toLocaleString()}원
-                  </span>
+              <div className="card-body gap-2 p-4">
+                {item.room?.accommodation_name && (
+                  <p className="text-xs text-base-content/50">{item.room.accommodation_name}</p>
                 )}
-                {item.room?.price_per_night != null && (
-                  <span className="flex items-center gap-1 text-base-content/70">
-                    <Moon className="size-3.5" />
-                    숙박 {item.room.price_per_night.toLocaleString()}원
-                  </span>
-                )}
-              </div>
+                <h3 className="card-title text-base">{item.room?.name ?? "객실 정보 없음"}</h3>
 
-              <div className="card-actions mt-2 flex items-center gap-2">
-                {item.room?.price_per_hour != null && (
-                  <button
-                    type="button"
-                    className="btn btn-outline btn-xs"
-                    onClick={() => handleCheckout(item.room_id, "hourly")}
-                  >
-                    대실 예약
-                  </button>
+                {item.room && (
+                  <>
+                    <span className="badge badge-outline badge-sm">
+                      {getStayTypeLabel(item.room.stay_type)}
+                    </span>
+                    <div className="flex items-center gap-2">
+                      {hasDiscount && (
+                        <>
+                          <span className="badge badge-error badge-sm font-bold">
+                            {item.room.discount_rate}%
+                          </span>
+                          <span className="text-sm text-base-content/40 line-through">
+                            {item.room.original_price.toLocaleString()}원
+                          </span>
+                        </>
+                      )}
+                      <span className="font-bold">{discountedPrice.toLocaleString()}원</span>
+                    </div>
+                  </>
                 )}
-                {item.room?.price_per_night != null && (
+
+                <div className="card-actions mt-2 flex items-center gap-2">
                   <button
                     type="button"
                     className="btn btn-primary btn-xs"
-                    onClick={() => handleCheckout(item.room_id, "nightly")}
+                    onClick={() => handleCheckout(item.room_id, item.room?.stay_type ?? "")}
                   >
-                    숙박 예약
+                    예약하기
                   </button>
-                )}
-                <button
-                  type="button"
-                  className="btn btn-ghost btn-xs text-error"
-                  disabled={removeFromCart.isPending}
-                  onClick={() => removeFromCart.mutate(item.id)}
-                >
-                  <Trash2 className="size-3.5" />
-                </button>
+                  <button
+                    type="button"
+                    className="btn btn-ghost btn-xs text-error"
+                    disabled={removeFromCart.isPending}
+                    onClick={() => removeFromCart.mutate(item.id)}
+                  >
+                    <Trash2 className="size-3.5" />
+                  </button>
+                </div>
               </div>
             </div>
-          </div>
-        ))}
+          )
+        })}
       </div>
     </div>
   )

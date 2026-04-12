@@ -41,7 +41,7 @@ export function SearchResult() {
   } = useSearchPage()
 
   return (
-    <div className="mx-auto max-w-7xl space-y-4 p-4 sm:p-6">
+    <div className="mx-auto max-w-6xl space-y-4 p-4 sm:p-6">
       {/* 카테고리 탭 */}
       <div role="tablist" className="tabs tabs-bordered">
         {ACCOMMODATION_CATEGORIES.map((cat) => (

@@ -11,6 +11,10 @@ export const PATH = {
   ACCOMMODATION: "/accommodation",
   /* 장바구니 */
   CART: "/cart",
+  /* 주문 내역 */
+  ORDERS: "/orders",
+  /* 포인트 */
+  POINTS: "/points",
   /* 결제 */
   CHECKOUT: "/checkout",
 }

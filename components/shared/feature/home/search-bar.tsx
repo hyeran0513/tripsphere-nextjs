@@ -46,7 +46,7 @@ export function SearchBar({
 
   return (
     <div
-      className={`${vertical ? "flex flex-col gap-3 rounded-2xl bg-base-100/90 p-4 shadow-lg backdrop-blur-sm" : "flex w-full max-w-5xl items-end gap-2 rounded-2xl bg-base-100/90 p-3 shadow-lg backdrop-blur-sm"}`}
+      className={`${vertical ? "flex flex-col gap-3 rounded-2xl bg-base-100/90 p-4 shadow-lg backdrop-blur-sm" : "flex w-full max-w-6xl items-end gap-2 rounded-2xl bg-base-100/90 p-3 shadow-lg backdrop-blur-sm"}`}
     >
       {/* 지역 */}
       <div className="form-control min-w-0 flex-1">

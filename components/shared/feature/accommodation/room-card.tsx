@@ -1,12 +1,13 @@
 "use client"
 
-import { ShoppingCart, Clock, Moon } from "lucide-react"
+import { ShoppingCart } from "lucide-react"
 import { useRouter } from "next/navigation"
 
 import { PATH } from "@/constants/path"
 import { useAuth } from "@/hooks/auth/use-auth"
 import { useAddToCartMutation } from "@/hooks/mutations/use-cart-mutation"
 import type { Room } from "@/types/room"
+import { getDiscountedPrice, formatRoomTime, getStayTypeLabel } from "@/types/room"
 
 type RoomCardProps = {
   room: Room
@@ -17,6 +18,10 @@ export function RoomCard({ room }: RoomCardProps) {
   const { user } = useAuth()
   const addToCart = useAddToCartMutation()
 
+  const discountedPrice = getDiscountedPrice(room)
+  const hasDiscount = room.discount_rate > 0
+  const isSoldOut = room.stock === 0 || !room.availability
+
   const handleAddToCart = () => {
     if (!user) {
       router.push(PATH.LOGIN)
@@ -25,21 +30,22 @@ export function RoomCard({ room }: RoomCardProps) {
     addToCart.mutate({ room_id: room.id, user_id: user.uid })
   }
 
-  const handleBook = (type: "hourly" | "nightly") => {
+  const handleBook = () => {
     if (!user) {
       router.push(PATH.LOGIN)
       return
     }
     const params = new URLSearchParams({
       roomId: room.id,
-      type,
+      type: room.stay_type,
     })
     router.push(`${PATH.CHECKOUT}?${params.toString()}`)
   }
 
   return (
-    <div className="card border border-base-300 bg-base-100">
-      <figure className="h-48 overflow-hidden">
+    <div className="card card-side border border-base-300 bg-base-100">
+      {/* 이미지 (왼쪽) */}
+      <figure className="w-40 shrink-0 sm:w-52">
         {room.images?.[0] ? (
           <img src={room.images[0]} alt={room.name} className="h-full w-full object-cover" />
         ) : (
@@ -49,81 +55,65 @@ export function RoomCard({ room }: RoomCardProps) {
         )}
       </figure>
 
-      <div className="card-body gap-3 p-4">
-        <div className="flex items-start justify-between">
-          <div>
+      {/* 정보 (중앙) */}
+      <div className="card-body flex-1 gap-2 p-4">
+        <div>
+          <div className="flex items-center gap-2">
             <h3 className="card-title text-base">{room.name}</h3>
-            {room.description && (
-              <p className="mt-1 text-sm text-base-content/60">{room.description}</p>
-            )}
+            {room.type && <span className="badge badge-outline badge-sm">{room.type}</span>}
           </div>
+          {room.description && (
+            <p className="mt-1 text-sm text-base-content/60">{room.description}</p>
+          )}
+        </div>
+
+        <div className="flex flex-wrap items-center gap-2 text-sm">
           <span className="badge badge-outline text-xs">
             성인 {room.capacity.adults}인 / 아동 {room.capacity.children}인
           </span>
-        </div>
-
-        <div className="flex items-center gap-1 text-sm">
-          <span
-            className={`badge badge-sm ${room.remaining_rooms > 0 ? "badge-success" : "badge-error"}`}
-          >
-            남은 객실 {room.remaining_rooms}개
+          <span className="badge badge-outline text-xs">{getStayTypeLabel(room.stay_type)}</span>
+          <span className={`badge badge-sm ${isSoldOut ? "badge-error" : "badge-success"}`}>
+            {isSoldOut ? "매진" : `남은 객실 ${room.stock}개`}
           </span>
         </div>
 
-        <div className="flex flex-col gap-2 text-sm">
-          {room.price_per_hour != null && (
-            <div className="flex items-center justify-between">
-              <span className="flex items-center gap-1 text-base-content/70">
-                <Clock className="size-3.5" />
-                대실
-              </span>
-              <span className="font-semibold">{room.price_per_hour.toLocaleString()}원</span>
-            </div>
-          )}
-          {room.price_per_night != null && (
-            <div className="flex items-center justify-between">
-              <span className="flex items-center gap-1 text-base-content/70">
-                <Moon className="size-3.5" />
-                숙박
-              </span>
-              <span className="font-semibold">{room.price_per_night.toLocaleString()}원</span>
-            </div>
-          )}
+        <div className="text-xs text-base-content/50">
+          체크인 {formatRoomTime(room.check_in)} · 체크아웃 {formatRoomTime(room.check_out)}
         </div>
 
-        <div className="card-actions mt-2 flex gap-2">
-          {room.price_per_hour != null && (
-            <button
-              type="button"
-              className="btn btn-outline btn-sm flex-1"
-              disabled={room.remaining_rooms === 0}
-              onClick={() => handleBook("hourly")}
-            >
-              <Clock className="size-3.5" />
-              대실 예약
-            </button>
+        {/* 가격 */}
+        <div className="flex items-center gap-2">
+          {hasDiscount && (
+            <>
+              <span className="badge badge-error badge-sm font-bold">{room.discount_rate}%</span>
+              <span className="text-sm text-base-content/40 line-through">
+                {room.original_price.toLocaleString()}원
+              </span>
+            </>
           )}
-          {room.price_per_night != null && (
-            <button
-              type="button"
-              className="btn btn-primary btn-sm flex-1"
-              disabled={room.remaining_rooms === 0}
-              onClick={() => handleBook("nightly")}
-            >
-              <Moon className="size-3.5" />
-              숙박 예약
-            </button>
-          )}
-          <button
-            type="button"
-            className="btn btn-ghost btn-sm"
-            disabled={room.remaining_rooms === 0 || addToCart.isPending}
-            onClick={handleAddToCart}
-            title="장바구니에 담기"
-          >
-            <ShoppingCart className="size-4" />
-          </button>
+          <span className="text-lg font-bold">{discountedPrice.toLocaleString()}원</span>
         </div>
+      </div>
+
+      {/* 버튼 (오른쪽) */}
+      <div className="flex flex-col justify-center gap-2 border-l border-base-300 p-4">
+        <button
+          type="button"
+          className="btn btn-primary btn-sm"
+          disabled={isSoldOut}
+          onClick={handleBook}
+        >
+          예약하기
+        </button>
+        <button
+          type="button"
+          className="btn btn-ghost btn-sm"
+          disabled={isSoldOut || addToCart.isPending}
+          onClick={handleAddToCart}
+          title="장바구니에 담기"
+        >
+          <ShoppingCart className="size-4" />
+        </button>
       </div>
     </div>
   )

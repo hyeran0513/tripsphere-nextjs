@@ -2,9 +2,14 @@
 
 import { MapPin, Star } from "lucide-react"
 import Link from "next/link"
+import { useQueries } from "@tanstack/react-query"
+import { collection, getDocs, query, where } from "firebase/firestore"
 
 import { PATH } from "@/constants/path"
+import { db } from "@/lib/firebase/client"
 import type { Accommodation } from "@/types/accommodation"
+import type { Room } from "@/types/room"
+import { getDiscountedPrice, getStayTypeLabel } from "@/types/room"
 
 type AccommodationListProps = {
   accommodations: Accommodation[]
@@ -12,23 +17,32 @@ type AccommodationListProps = {
   hasSearched: boolean
 }
 
+async function fetchRoomsByAccommodation(accommodationId: string): Promise<Room[]> {
+  const q = query(collection(db, "rooms"), where("accommodation_id", "==", accommodationId))
+  const snapshot = await getDocs(q)
+  return snapshot.docs.map((doc) => ({
+    id: doc.id,
+    ...(doc.data() as Omit<Room, "id">),
+  }))
+}
+
 export function AccommodationList({
   accommodations,
   isSearching,
   hasSearched,
 }: AccommodationListProps) {
+  const roomQueries = useQueries({
+    queries: accommodations.map((acc) => ({
+      queryKey: ["rooms", acc.id],
+      queryFn: () => fetchRoomsByAccommodation(acc.id),
+    })),
+  })
+
   if (isSearching) {
     return (
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        {Array.from({ length: 6 }).map((_, i) => (
-          <div key={i} className="card border border-base-300 bg-base-100">
-            <figure className="skeleton h-48 w-full rounded-b-none" />
-            <div className="card-body gap-3 p-4">
-              <div className="skeleton h-5 w-3/4" />
-              <div className="skeleton h-4 w-1/2" />
-              <div className="skeleton h-4 w-1/3" />
-            </div>
-          </div>
+      <div className="flex flex-col gap-4">
+        {Array.from({ length: 3 }).map((_, i) => (
+          <div key={i} className="skeleton h-40 w-full rounded-lg" />
         ))}
       </div>
     )
@@ -47,50 +61,86 @@ export function AccommodationList({
   }
 
   return (
-    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-      {accommodations.map((item) => (
-        <Link
-          key={item.id}
-          href={`${PATH.ACCOMMODATION}/${item.id}`}
-          className="card border border-base-300 bg-base-100 transition-shadow hover:shadow-md"
-        >
-          <figure className="h-48 overflow-hidden">
-            {item.images?.[0] ? (
-              <img src={item.images[0]} alt={item.name} className="h-full w-full object-cover" />
-            ) : (
-              <div className="flex h-full w-full items-center justify-center bg-base-200 text-base-content/30">
-                이미지 없음
-              </div>
-            )}
-          </figure>
+    <div className="flex flex-col gap-4">
+      {accommodations.map((item, index) => {
+        const rooms = roomQueries[index]?.data ?? []
+        const minPriceRoom =
+          rooms.length > 0
+            ? rooms.reduce((min, r) => (getDiscountedPrice(r) < getDiscountedPrice(min) ? r : min))
+            : null
 
-          <div className="card-body gap-2 p-4">
-            <div className="flex items-start justify-between gap-2">
-              <h3 className="card-title text-base">{item.name}</h3>
-              {item.total_rating && item.review_count ? (
-                <div className="flex items-center gap-1 text-sm text-warning">
-                  <Star className="size-4 fill-current" />
-                  <span>{(item.total_rating / item.review_count).toFixed(1)}</span>
-                  <span className="text-base-content/50">({item.review_count})</span>
+        return (
+          <Link
+            key={item.id}
+            href={`${PATH.ACCOMMODATION}/${item.id}`}
+            className="card card-side border border-base-300 bg-base-100 transition-shadow hover:shadow-md"
+          >
+            <figure className="w-48 shrink-0 sm:w-64">
+              {item.images?.[0] ? (
+                <img src={item.images[0]} alt={item.name} className="h-full w-full object-cover" />
+              ) : (
+                <div className="flex h-full w-full items-center justify-center bg-base-200 text-base-content/30">
+                  이미지 없음
                 </div>
-              ) : null}
+              )}
+            </figure>
+
+            <div className="card-body gap-2 p-4 flex-1">
+              <div className="flex items-start justify-between gap-2">
+                <div>
+                  <div className="flex items-center gap-2">
+                    <h3 className="card-title text-base">{item.name}</h3>
+                    {item.type && <span className="badge badge-outline badge-sm">{item.type}</span>}
+                  </div>
+                  <p className="mt-1 flex items-center gap-1 text-sm text-base-content/60">
+                    <MapPin className="size-3.5" />
+                    {item.location?.city} {item.location?.sub_city}
+                  </p>
+                </div>
+
+                {item.total_rating && item.review_count ? (
+                  <div className="flex items-center gap-1 text-sm text-warning">
+                    <Star className="size-4 fill-current" />
+                    <span>{(item.total_rating / item.review_count).toFixed(1)}</span>
+                    <span className="text-base-content/50">({item.review_count})</span>
+                  </div>
+                ) : null}
+              </div>
+
+              {item.description && (
+                <p className="line-clamp-2 text-sm text-base-content/70">{item.description}</p>
+              )}
+
+              {/* 객실 정보 */}
+              {rooms.length > 0 && (
+                <div className="mt-auto flex flex-wrap items-center gap-3 border-t border-base-200 pt-2">
+                  <span className="text-xs text-base-content/50">객실 {rooms.length}개</span>
+                  {minPriceRoom && (
+                    <div className="flex items-center gap-2">
+                      <span className="badge badge-outline badge-xs">
+                        {getStayTypeLabel(minPriceRoom.stay_type)}
+                      </span>
+                      {minPriceRoom.discount_rate > 0 && (
+                        <>
+                          <span className="badge badge-error badge-xs font-bold">
+                            {minPriceRoom.discount_rate}%
+                          </span>
+                          <span className="text-xs text-base-content/40 line-through">
+                            {minPriceRoom.original_price.toLocaleString()}원
+                          </span>
+                        </>
+                      )}
+                      <span className="font-bold">
+                        {getDiscountedPrice(minPriceRoom).toLocaleString()}원~
+                      </span>
+                    </div>
+                  )}
+                </div>
+              )}
             </div>
-
-            <p className="flex items-center gap-1 text-sm text-base-content/60">
-              <MapPin className="size-3.5" />
-              {item.location?.city} {item.location?.sub_city}
-            </p>
-
-            {item.description && (
-              <p className="line-clamp-2 text-sm text-base-content/70">{item.description}</p>
-            )}
-
-            <div className="mt-1">
-              <span className="badge badge-outline badge-sm">{item.type}</span>
-            </div>
-          </div>
-        </Link>
-      ))}
+          </Link>
+        )
+      })}
     </div>
   )
 }

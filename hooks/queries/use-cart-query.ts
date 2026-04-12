@@ -32,8 +32,9 @@ async function fetchCart(userId: string): Promise<CartItem[]> {
 
           item.room = {
             name: roomData.name,
-            price_per_hour: roomData.price_per_hour,
-            price_per_night: roomData.price_per_night,
+            original_price: roomData.original_price,
+            discount_rate: roomData.discount_rate,
+            stay_type: roomData.stay_type,
             accommodation_name: accData?.name,
             image: roomData.images?.[0] ?? accData?.images?.[0],
           }

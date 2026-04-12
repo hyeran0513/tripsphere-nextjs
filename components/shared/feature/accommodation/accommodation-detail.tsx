@@ -1,11 +1,13 @@
 "use client"
 
+import { useState } from "react"
 import { MapPin, Star, Phone, Mail } from "lucide-react"
 
 import { useAccommodationDetailQuery } from "@/hooks/queries/use-accommodation-detail-query"
 import { useRoomsQuery } from "@/hooks/queries/use-rooms-query"
 import { useReviewsQuery } from "@/hooks/queries/use-reviews-query"
 import { AccommodationImages } from "./accommodation-images"
+import { BookingSearchBox } from "./booking-search-box"
 import { RoomCard } from "./room-card"
 import { ReviewList } from "./review-list"
 
@@ -17,14 +19,24 @@ export function AccommodationDetail({ accommodationId }: AccommodationDetailProp
   const { data: accommodation, isLoading } = useAccommodationDetailQuery(accommodationId)
   const { data: rooms, isLoading: roomsLoading } = useRoomsQuery(accommodationId)
   const { data: reviews } = useReviewsQuery(accommodationId)
+  const [bookingParams, setBookingParams] = useState<{
+    checkIn: string
+    checkOut: string
+    guests: number
+  } | null>(null)
+
+  const filteredRooms = rooms?.filter((room) => {
+    if (!bookingParams) return true
+    return room.capacity.adults >= bookingParams.guests && room.stock > 0 && room.availability
+  })
 
   if (isLoading) {
     return (
-      <div className="mx-auto max-w-4xl space-y-6 p-4">
+      <div className="mx-auto max-w-6xl space-y-6 p-4">
         <div className="skeleton h-72 w-full rounded-lg sm:h-96" />
         <div className="skeleton h-8 w-1/2" />
         <div className="skeleton h-5 w-1/3" />
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+        <div className="flex flex-col gap-4">
           {Array.from({ length: 2 }).map((_, i) => (
             <div key={i} className="skeleton h-64 rounded-lg" />
           ))}
@@ -47,7 +59,7 @@ export function AccommodationDetail({ accommodationId }: AccommodationDetailProp
       : null
 
   return (
-    <div className="mx-auto max-w-4xl space-y-8 p-4">
+    <div className="mx-auto max-w-6xl space-y-8 p-4">
       {/* 이미지 */}
       <AccommodationImages images={accommodation.images ?? []} name={accommodation.name} />
 
@@ -105,24 +117,36 @@ export function AccommodationDetail({ accommodationId }: AccommodationDetailProp
 
       <div className="divider" />
 
-      {/* 객실 목록 */}
+      {/* 객실 목록 + 검색 영역 */}
       <section>
         <h2 className="mb-4 text-xl font-bold">객실</h2>
-        {roomsLoading ? (
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-            {Array.from({ length: 2 }).map((_, i) => (
-              <div key={i} className="skeleton h-64 rounded-lg" />
-            ))}
+        <div className="flex flex-col gap-6 lg:flex-row">
+          {/* 객실 카드 */}
+          <div className="flex-1">
+            {roomsLoading ? (
+              <div className="flex flex-col gap-4">
+                {Array.from({ length: 2 }).map((_, i) => (
+                  <div key={i} className="skeleton h-64 rounded-lg" />
+                ))}
+              </div>
+            ) : filteredRooms && filteredRooms.length > 0 ? (
+              <div className="flex flex-col gap-4">
+                {filteredRooms.map((room) => (
+                  <RoomCard key={room.id} room={room} />
+                ))}
+              </div>
+            ) : (
+              <p className="py-8 text-center text-sm text-base-content/50">
+                {bookingParams ? "조건에 맞는 객실이 없습니다." : "등록된 객실이 없습니다."}
+              </p>
+            )}
           </div>
-        ) : rooms && rooms.length > 0 ? (
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-            {rooms.map((room) => (
-              <RoomCard key={room.id} room={room} />
-            ))}
+
+          {/* 검색 사이드바 */}
+          <div className="w-full shrink-0 lg:w-72">
+            <BookingSearchBox onSearch={setBookingParams} />
           </div>
-        ) : (
-          <p className="py-8 text-center text-sm text-base-content/50">등록된 객실이 없습니다.</p>
-        )}
+        </div>
       </section>
 
       <div className="divider" />

@@ -2,19 +2,20 @@
 
 import { useState } from "react"
 import { useRouter, useSearchParams } from "next/navigation"
-import { Clock, Moon, CheckCircle, Wallet } from "lucide-react"
+import { CheckCircle, Wallet } from "lucide-react"
 
 import { PATH } from "@/constants/path"
 import { useAuth } from "@/hooks/auth/use-auth"
 import { usePointsQuery, calculateAvailablePoints } from "@/hooks/queries/use-points-query"
 import { useCreateOrderMutation } from "@/hooks/mutations/use-order-mutation"
 import { useRoomDetailQuery } from "@/hooks/queries/use-room-detail-query"
+import { getDiscountedPrice, getStayTypeLabel } from "@/types/room"
 
 export function CheckoutForm() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const roomId = searchParams.get("roomId")
-  const bookingType = searchParams.get("type") as "hourly" | "nightly" | null
+  const bookingType = searchParams.get("type")
 
   const { user, isLoading: authLoading } = useAuth()
   const { data: room, isLoading: roomLoading } = useRoomDetailQuery(roomId)
@@ -26,20 +27,19 @@ export function CheckoutForm() {
   const [orderComplete, setOrderComplete] = useState(false)
 
   const availablePoints = points ? calculateAvailablePoints(points) : 0
-  const price =
-    bookingType === "hourly" ? (room?.price_per_hour ?? 0) : (room?.price_per_night ?? 0)
+  const price = room ? getDiscountedPrice(room) : 0
 
   const canPay = availablePoints >= price && price > 0
 
   const handleSubmit = async () => {
-    if (!user || !roomId || !canPay) return
+    if (!user || !roomId || !room || !canPay) return
 
     await createOrder.mutateAsync({
       room_id: roomId,
       user_id: user.uid,
       used_points: price,
-      selectedTime: bookingType === "hourly" ? selectedTime : undefined,
-      duration: bookingType === "hourly" ? { hours: duration, minutes: 0 } : undefined,
+      selectedTime: room.stay_type === "day_use" ? selectedTime : undefined,
+      duration: room.stay_type === "day_use" ? { hours: duration, minutes: 0 } : undefined,
     })
 
     setOrderComplete(true)
@@ -47,7 +47,7 @@ export function CheckoutForm() {
 
   if (authLoading || roomLoading) {
     return (
-      <div className="mx-auto max-w-2xl space-y-4 p-4">
+      <div className="mx-auto max-w-6xl space-y-4 p-4">
         <div className="skeleton h-8 w-40" />
         <div className="skeleton h-48 w-full rounded-lg" />
         <div className="skeleton h-32 w-full rounded-lg" />
@@ -77,25 +77,30 @@ export function CheckoutForm() {
 
   if (orderComplete) {
     return (
-      <div className="mx-auto flex max-w-2xl flex-col items-center justify-center py-20">
+      <div className="mx-auto flex max-w-6xl flex-col items-center justify-center py-20">
         <CheckCircle className="mb-4 size-16 text-success" />
         <h2 className="text-2xl font-bold">예약이 완료되었습니다!</h2>
         <p className="mt-2 text-base-content/60">
           {price.toLocaleString()} 포인트가 사용되었습니다.
         </p>
-        <button
-          type="button"
-          className="btn btn-primary mt-6"
-          onClick={() => router.push(PATH.HOME)}
-        >
-          홈으로 돌아가기
-        </button>
+        <div className="mt-6 flex gap-3">
+          <button
+            type="button"
+            className="btn btn-primary"
+            onClick={() => router.push(PATH.ORDERS)}
+          >
+            주문 내역 보기
+          </button>
+          <button type="button" className="btn btn-ghost" onClick={() => router.push(PATH.HOME)}>
+            홈으로
+          </button>
+        </div>
       </div>
     )
   }
 
   return (
-    <div className="mx-auto max-w-2xl space-y-6 p-4">
+    <div className="mx-auto max-w-6xl space-y-6 p-4">
       <h1 className="text-2xl font-bold">결제하기</h1>
 
       {/* 객실 정보 */}
@@ -104,24 +109,27 @@ export function CheckoutForm() {
           <h3 className="card-title text-base">{room.name}</h3>
           {room.description && <p className="text-sm text-base-content/60">{room.description}</p>}
           <div className="flex items-center gap-2">
-            {bookingType === "hourly" ? (
-              <span className="badge badge-outline gap-1">
-                <Clock className="size-3" /> 대실
-              </span>
-            ) : (
-              <span className="badge badge-primary gap-1">
-                <Moon className="size-3" /> 숙박
-              </span>
-            )}
+            <span className="badge badge-outline">{getStayTypeLabel(room.stay_type)}</span>
             <span className="badge badge-outline">
               성인 {room.capacity.adults}인 / 아동 {room.capacity.children}인
             </span>
+          </div>
+          <div className="flex items-center gap-2">
+            {room.discount_rate > 0 && (
+              <>
+                <span className="badge badge-error badge-sm font-bold">{room.discount_rate}%</span>
+                <span className="text-sm text-base-content/40 line-through">
+                  {room.original_price.toLocaleString()}원
+                </span>
+              </>
+            )}
+            <span className="text-lg font-bold">{price.toLocaleString()}원</span>
           </div>
         </div>
       </div>
 
       {/* 대실 옵션 */}
-      {bookingType === "hourly" && (
+      {room.stay_type === "day_use" && (
         <div className="card border border-base-300 bg-base-100">
           <div className="card-body gap-4">
             <h3 className="font-semibold">대실 옵션</h3>
