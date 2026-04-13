@@ -20,6 +20,9 @@ export function AccommodationDetail({ accommodationId }: AccommodationDetailProp
   const { data: accommodation, isLoading } = useAccommodationDetailQuery(accommodationId)
   const { data: rooms, isLoading: roomsLoading } = useRoomsQuery(accommodationId)
   const { data: reviews } = useReviewsQuery(accommodationId)
+  const [checkIn, setCheckIn] = useState("")
+  const [checkOut, setCheckOut] = useState("")
+  const [guests, setGuests] = useState(2)
   const [bookingParams, setBookingParams] = useState<{
     checkIn: string
     checkOut: string
@@ -147,7 +150,15 @@ export function AccommodationDetail({ accommodationId }: AccommodationDetailProp
 
           {/* 검색 사이드바 */}
           <div className="w-full shrink-0 lg:w-72">
-            <BookingSearchBox onSearch={setBookingParams} />
+            <BookingSearchBox
+              checkIn={checkIn}
+              checkOut={checkOut}
+              guests={guests}
+              onCheckInChange={setCheckIn}
+              onCheckOutChange={setCheckOut}
+              onGuestsChange={setGuests}
+              onSearch={() => setBookingParams({ checkIn, checkOut, guests })}
+            />
           </div>
         </div>
       </section>
