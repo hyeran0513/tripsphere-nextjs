@@ -6,7 +6,7 @@ import { Camera, ChevronLeft, ChevronRight, X } from "lucide-react"
 
 import { Modal } from "@/components/ui/modal"
 
-type AccommodationImagesProps = {
+type LodgingImagesProps = {
   images: string[]
   name: string
 }
@@ -85,7 +85,7 @@ function ImageSlideModal({
   )
 }
 
-export function AccommodationImages({ images, name }: AccommodationImagesProps) {
+export function LodgingImages({ images, name }: LodgingImagesProps) {
   const [showModal, setShowModal] = useState(false)
   const [modalIndex, setModalIndex] = useState(0)
 
@@ -102,7 +102,6 @@ export function AccommodationImages({ images, name }: AccommodationImagesProps) 
     setShowModal(true)
   }
 
-  // 최대 4개 이미지 표시용
   const img0 = images[0]
   const img1 = images[1]
   const img2 = images[2]

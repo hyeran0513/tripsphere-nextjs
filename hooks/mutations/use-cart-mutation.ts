@@ -6,13 +6,13 @@ import { addDoc, collection, deleteDoc, doc } from "firebase/firestore"
 import { db } from "@/lib/firebase/client"
 
 type AddToCartParams = {
-  room_id: string
+  lodging_id: string
   user_id: string
 }
 
 async function addToCart(params: AddToCartParams) {
   const docRef = await addDoc(collection(db, "carts"), {
-    room_id: params.room_id,
+    lodging_id: params.lodging_id,
     user_id: params.user_id,
     created_at: new Date().toISOString(),
   })

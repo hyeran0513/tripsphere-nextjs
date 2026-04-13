@@ -5,8 +5,7 @@ import { collection, getDocs, query, where, doc, getDoc } from "firebase/firesto
 
 import { db } from "@/lib/firebase/client"
 import type { CartItem } from "@/types/cart"
-import type { Room } from "@/types/room"
-import type { Accommodation } from "@/types/accommodation"
+import type { Lodging } from "@/types/lodging"
 
 async function fetchCart(userId: string): Promise<CartItem[]> {
   const q = query(collection(db, "carts"), where("user_id", "==", userId))
@@ -17,30 +16,24 @@ async function fetchCart(userId: string): Promise<CartItem[]> {
       const data = cartDoc.data()
       const item: CartItem = {
         id: cartDoc.id,
-        room_id: data.room_id,
+        lodging_id: data.lodging_id,
         user_id: data.user_id,
         created_at: data.created_at,
       }
 
-      // 객실 정보 조인
       try {
-        const roomSnap = await getDoc(doc(db, "rooms", data.room_id))
-        if (roomSnap.exists()) {
-          const roomData = roomSnap.data() as Omit<Room, "id">
-          const accSnap = await getDoc(doc(db, "accommodations", roomData.accommodation_id))
-          const accData = accSnap.exists() ? (accSnap.data() as Omit<Accommodation, "id">) : null
-
-          item.room = {
-            name: roomData.name,
-            original_price: roomData.original_price,
-            discount_rate: roomData.discount_rate,
-            stay_type: roomData.stay_type,
-            accommodation_name: accData?.name,
-            image: roomData.images?.[0] ?? accData?.images?.[0],
+        const lodgingSnap = await getDoc(doc(db, "public_lodgings", data.lodging_id))
+        if (lodgingSnap.exists()) {
+          const lodgingData = lodgingSnap.data() as Omit<Lodging, "id">
+          item.lodging = {
+            name: lodgingData.name,
+            price_point: lodgingData.price_point,
+            type: lodgingData.type,
+            image: lodgingData.images?.[0],
           }
         }
       } catch {
-        // 객실 정보를 가져오지 못해도 장바구니 아이템은 표시
+        // 숙소 정보를 가져오지 못해도 장바구니 아이템은 표시
       }
 
       return item

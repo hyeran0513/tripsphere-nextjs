@@ -8,7 +8,7 @@ export const PATH = {
   /* 검색 결과 */
   SEARCH: "/search",
   /* 숙소 상세 */
-  ACCOMMODATION: "/accommodation",
+  LODGING: "/lodging",
   /* 찜 */
   CART: "/cart",
   /* 예약 내역 */

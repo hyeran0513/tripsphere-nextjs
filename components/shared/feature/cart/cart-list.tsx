@@ -5,7 +5,7 @@ import { Heart, Trash2 } from "lucide-react"
 import { useRouter } from "next/navigation"
 
 import { PATH } from "@/constants/path"
-import { getStayTypeLabel, formatDiscountRate } from "@/types/room"
+import { getLodgingTypeLabel } from "@/types/lodging"
 import { useAuth } from "@/hooks/auth/use-auth"
 import { useCartQuery } from "@/hooks/queries/use-cart-query"
 import { useRemoveFromCartMutation } from "@/hooks/mutations/use-cart-mutation"
@@ -53,8 +53,8 @@ export function CartList() {
     )
   }
 
-  const handleCheckout = (roomId: string, stayType: string) => {
-    const params = new URLSearchParams({ roomId, type: stayType })
+  const handleCheckout = (lodgingId: string) => {
+    const params = new URLSearchParams({ lodgingId })
     router.push(`${PATH.CHECKOUT}?${params.toString()}`)
   }
 
@@ -63,88 +63,70 @@ export function CartList() {
       <h1 className="text-2xl font-bold">찜 목록 ({cartItems.length})</h1>
 
       <div className="flex flex-col gap-4">
-        {cartItems.map((item) => {
-          const hasDiscount = (item.room?.discount_rate ?? 0) > 0
-          const discountedPrice = item.room
-            ? Math.round(item.room.original_price * (1 - item.room.discount_rate))
-            : 0
+        {cartItems.map((item) => (
+          <div key={item.id} className="card card-side border border-base-300 bg-base-100">
+            {/* 이미지 */}
+            <figure className="relative min-h-32 w-40 shrink-0 sm:min-h-36 sm:w-52">
+              {item.lodging?.image ? (
+                <Image
+                  src={item.lodging.image}
+                  alt={item.lodging?.name ?? "숙소"}
+                  fill
+                  className="object-cover"
+                  sizes="(max-width: 640px) 10rem, 13rem"
+                  unoptimized
+                />
+              ) : (
+                <div className="flex h-full w-full items-center justify-center bg-base-200 text-xs text-base-content/30">
+                  이미지 없음
+                </div>
+              )}
+            </figure>
 
-          return (
-            <div key={item.id} className="card card-side border border-base-300 bg-base-100">
-              {/* 이미지 */}
-              <figure className="relative min-h-32 w-40 shrink-0 sm:min-h-36 sm:w-52">
-                {item.room?.image ? (
-                  <Image
-                    src={item.room.image}
-                    alt={item.room?.name ?? "객실"}
-                    fill
-                    className="object-cover"
-                    sizes="(max-width: 640px) 10rem, 13rem"
-                    unoptimized
-                  />
-                ) : (
-                  <div className="flex h-full w-full items-center justify-center bg-base-200 text-xs text-base-content/30">
-                    이미지 없음
-                  </div>
-                )}
-              </figure>
+            {/* 정보 */}
+            <div className="card-body flex-1 gap-2 p-4">
+              <h3 className="card-title text-base">{item.lodging?.name ?? "숙소 정보 없음"}</h3>
 
-              {/* 정보 */}
-              <div className="card-body flex-1 gap-2 p-4">
-                {item.room?.accommodation_name && (
-                  <p className="text-xs text-base-content/50">{item.room.accommodation_name}</p>
-                )}
-                <h3 className="card-title text-base">{item.room?.name ?? "객실 정보 없음"}</h3>
+              {item.lodging?.type && (
+                <div className="flex flex-wrap items-center gap-2 text-sm">
+                  <span className="badge badge-outline text-xs">
+                    {getLodgingTypeLabel(item.lodging.type)}
+                  </span>
+                </div>
+              )}
 
-                {item.room && (
-                  <div className="flex flex-wrap items-center gap-2 text-sm">
-                    <span className="badge badge-outline text-xs">
-                      {getStayTypeLabel(item.room.stay_type)}
-                    </span>
-                  </div>
-                )}
-
-                {item.room && (
-                  <div className="flex items-center gap-2">
-                    {hasDiscount && (
-                      <>
-                        <span className="text-sm font-bold text-error">
-                          {formatDiscountRate(item.room.discount_rate)}
-                        </span>
-                        <span className="text-sm text-base-content/40 line-through">
-                          {item.room.original_price.toLocaleString()}원
-                        </span>
-                      </>
-                    )}
-                    <span className="text-lg font-bold">{discountedPrice.toLocaleString()}원</span>
-                  </div>
-                )}
-              </div>
-
-              {/* 버튼 */}
-              <div className="flex flex-col justify-center gap-2 border-l border-base-300 p-4">
-                {/* 예약하기 버튼 */}
-                <button
-                  type="button"
-                  className="btn btn-primary btn-sm"
-                  onClick={() => handleCheckout(item.room_id, item.room?.stay_type ?? "")}
-                >
-                  예약하기
-                </button>
-
-                {/* 찜 제거 버튼 */}
-                <button
-                  type="button"
-                  className="btn btn-ghost btn-sm text-error"
-                  disabled={removeFromCart.isPending}
-                  onClick={() => removeFromCart.mutate(item.id)}
-                >
-                  <Trash2 className="size-4" />
-                </button>
-              </div>
+              {item.lodging && (
+                <div className="flex items-center gap-2">
+                  <span className="text-lg font-bold">
+                    {item.lodging.price_point.toLocaleString()}원
+                  </span>
+                </div>
+              )}
             </div>
-          )
-        })}
+
+            {/* 버튼 */}
+            <div className="flex flex-col justify-center gap-2 border-l border-base-300 p-4">
+              {/* 예약하기 버튼 */}
+              <button
+                type="button"
+                className="btn btn-primary btn-sm"
+                onClick={() => handleCheckout(item.lodging_id)}
+              >
+                예약하기
+              </button>
+
+              {/* 찜 제거 버튼 */}
+              <button
+                type="button"
+                className="btn btn-ghost btn-sm text-error"
+                disabled={removeFromCart.isPending}
+                onClick={() => removeFromCart.mutate(item.id)}
+              >
+                <Trash2 className="size-4" />
+              </button>
+            </div>
+          </div>
+        ))}
       </div>
     </div>
   )

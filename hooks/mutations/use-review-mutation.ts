@@ -6,7 +6,7 @@ import { addDoc, collection, doc, updateDoc } from "firebase/firestore"
 import { db } from "@/lib/firebase/client"
 
 type CreateReviewParams = {
-  accommodation_id: string
+  lodging_id: string
   user_id: string
   order_id: string
   rating: number
@@ -16,7 +16,7 @@ type CreateReviewParams = {
 async function createReview(params: CreateReviewParams) {
   // 리뷰 생성
   await addDoc(collection(db, "reviews"), {
-    accommodation_id: params.accommodation_id,
+    lodging_id: params.lodging_id,
     user_id: params.user_id,
     rating: params.rating,
     comment: params.comment,
@@ -36,7 +36,7 @@ export function useCreateReviewMutation() {
     mutationFn: createReview,
     onSuccess: (_data, variables) => {
       queryClient.invalidateQueries({
-        queryKey: ["reviews", variables.accommodation_id],
+        queryKey: ["reviews", variables.lodging_id],
       })
       queryClient.invalidateQueries({
         queryKey: ["orders", variables.user_id],

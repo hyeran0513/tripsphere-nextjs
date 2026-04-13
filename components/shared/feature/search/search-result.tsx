@@ -1,23 +1,23 @@
 "use client"
 
-import { Building2, DoorOpen, Gem, Home, LayoutGrid, Tent, Users } from "lucide-react"
+import { Building, Building2, DoorOpen, Gem, Hotel, LayoutGrid, MoreHorizontal } from "lucide-react"
 
-import { AccommodationList } from "@/components/shared/feature/home/accommodation-list"
+import { LodgingList } from "@/components/shared/feature/home/lodging-list"
 import { SearchBar } from "@/components/shared/feature/home/search-bar"
 import {
-  ACCOMMODATION_CATEGORIES,
-  type AccommodationCategory,
+  LODGING_CATEGORIES,
+  type LodgingCategory,
   useSearchPage,
 } from "@/hooks/search/use-search-page"
 
-const CATEGORY_ICONS: Record<AccommodationCategory, React.ReactNode> = {
+const CATEGORY_ICONS: Record<LodgingCategory, React.ReactNode> = {
   전체: <LayoutGrid className="size-4" />,
-  호텔: <Building2 className="size-4" />,
-  모텔: <DoorOpen className="size-4" />,
-  리조트: <Gem className="size-4" />,
-  펜션: <Home className="size-4" />,
-  게스트하우스: <Users className="size-4" />,
-  캠핑: <Tent className="size-4" />,
+  관광호텔: <Hotel className="size-4" />,
+  일반호텔: <Building2 className="size-4" />,
+  여관업: <DoorOpen className="size-4" />,
+  "숙박업(생활)": <Building className="size-4" />,
+  휴양콘도미니엄업: <Gem className="size-4" />,
+  "숙박업 기타": <MoreHorizontal className="size-4" />,
 }
 
 export function SearchResult() {
@@ -35,7 +35,7 @@ export function SearchResult() {
     handleSearch,
     category,
     setCategory,
-    accommodations,
+    lodgings,
     isSearching,
     hasSearched,
   } = useSearchPage()
@@ -44,7 +44,7 @@ export function SearchResult() {
     <div className="mx-auto max-w-6xl w-full space-y-4 p-4 sm:p-6">
       {/* 카테고리 탭 */}
       <div role="tablist" className="tabs tabs-bordered">
-        {ACCOMMODATION_CATEGORIES.map((cat) => (
+        {LODGING_CATEGORIES.map((cat) => (
           <button
             key={cat}
             type="button"
@@ -80,11 +80,7 @@ export function SearchResult() {
 
         {/* 검색 결과 리스트 */}
         <main className="min-w-0 flex-1">
-          <AccommodationList
-            accommodations={accommodations}
-            isSearching={isSearching}
-            hasSearched={hasSearched}
-          />
+          <LodgingList lodgings={lodgings} isSearching={isSearching} hasSearched={hasSearched} />
         </main>
       </div>
     </div>

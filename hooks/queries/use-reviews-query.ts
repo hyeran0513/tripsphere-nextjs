@@ -6,10 +6,10 @@ import { collection, getDocs, query, where, orderBy } from "firebase/firestore"
 import { db } from "@/lib/firebase/client"
 import type { Review } from "@/types/review"
 
-async function fetchReviews(accommodationId: string): Promise<Review[]> {
+async function fetchReviews(lodgingId: string): Promise<Review[]> {
   const q = query(
     collection(db, "reviews"),
-    where("accommodation_id", "==", accommodationId),
+    where("lodging_id", "==", lodgingId),
     orderBy("created_at", "desc")
   )
   const snapshot = await getDocs(q)
@@ -19,10 +19,10 @@ async function fetchReviews(accommodationId: string): Promise<Review[]> {
   }))
 }
 
-export function useReviewsQuery(accommodationId: string | null) {
+export function useReviewsQuery(lodgingId: string | null) {
   return useQuery({
-    queryKey: ["reviews", accommodationId],
-    queryFn: () => fetchReviews(accommodationId!),
-    enabled: !!accommodationId,
+    queryKey: ["reviews", lodgingId],
+    queryFn: () => fetchReviews(lodgingId!),
+    enabled: !!lodgingId,
   })
 }

@@ -9,17 +9,17 @@ import "swiper/css"
 import "swiper/css/navigation"
 
 import { PATH } from "@/constants/path"
-import { getAccommodationTypeLabel } from "@/types/accommodation"
-import { useCityAccommodationsQuery } from "@/hooks/queries/use-city-accommodations-query"
+import { getLodgingTypeLabel } from "@/types/lodging"
+import { useCityLodgingsQuery } from "@/hooks/queries/use-city-lodgings-query"
 import { useId } from "react"
 
-type CityAccommodationSectionProps = {
+type CityLodgingSectionProps = {
   city: string
   label: string
 }
 
-export function CityAccommodationSection({ city, label }: CityAccommodationSectionProps) {
-  const { data: accommodations, isLoading } = useCityAccommodationsQuery(city)
+export function CityLodgingSection({ city, label }: CityLodgingSectionProps) {
+  const { data: lodgings, isLoading } = useCityLodgingsQuery(city)
   const id = useId().replace(/:/g, "")
 
   if (isLoading) {
@@ -35,7 +35,7 @@ export function CityAccommodationSection({ city, label }: CityAccommodationSecti
     )
   }
 
-  if (!accommodations || accommodations.length === 0) return null
+  if (!lodgings || lodgings.length === 0) return null
 
   return (
     <section>
@@ -71,7 +71,7 @@ export function CityAccommodationSection({ city, label }: CityAccommodationSecti
           1024: { slidesPerView: 6 },
         }}
       >
-        {accommodations.map((item) => {
+        {lodgings.map((item) => {
           const avgRating =
             item.total_rating && item.review_count
               ? (item.total_rating / item.review_count).toFixed(1)
@@ -79,7 +79,7 @@ export function CityAccommodationSection({ city, label }: CityAccommodationSecti
 
           return (
             <SwiperSlide key={item.id}>
-              <Link href={`${PATH.ACCOMMODATION}/${item.id}`} className="group block">
+              <Link href={`${PATH.LODGING}/${item.id}`} className="group block">
                 <figure className="relative aspect-square overflow-hidden rounded-lg">
                   {item.images?.[0] ? (
                     <Image
@@ -105,7 +105,7 @@ export function CityAccommodationSection({ city, label }: CityAccommodationSecti
                     {/* 숙소 유형 */}
                     {item.type && (
                       <span className="text-xs text-base-content/50">
-                        {getAccommodationTypeLabel(item.type)}
+                        {getLodgingTypeLabel(item.type)}
                       </span>
                     )}
 
@@ -116,6 +116,11 @@ export function CityAccommodationSection({ city, label }: CityAccommodationSecti
                         {avgRating}
                       </span>
                     )}
+                  </div>
+
+                  {/* 가격 */}
+                  <div className="mt-1 text-sm font-bold">
+                    {item.price_point.toLocaleString()}원
                   </div>
                 </div>
               </Link>

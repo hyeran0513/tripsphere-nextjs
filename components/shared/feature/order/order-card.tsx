@@ -6,7 +6,7 @@ import { Pencil } from "lucide-react"
 import { format } from "date-fns"
 
 import { Modal } from "@/components/ui/modal"
-import { getStayTypeLabel } from "@/types/room"
+import { getLodgingTypeLabel } from "@/types/lodging"
 import type { OrderWithDetails } from "@/hooks/queries/use-orders-query"
 import { useCancelOrderMutation } from "@/hooks/mutations/use-order-mutation"
 import { OrderReviewModal } from "@/components/shared/feature/order/order-review-modal"
@@ -47,10 +47,10 @@ export function OrderCard({ order }: OrderCardProps) {
       <div className="card card-side border border-base-300 bg-base-100">
         {/* 이미지 */}
         <figure className="relative min-h-32 w-40 shrink-0 sm:min-h-36 sm:w-52">
-          {order.room?.image ? (
+          {order.lodging?.image ? (
             <Image
-              src={order.room.image}
-              alt={order.room?.name ?? "객실"}
+              src={order.lodging.image}
+              alt={order.lodging?.name ?? "숙소"}
               fill
               className="object-cover"
               sizes="(max-width: 640px) 10rem, 13rem"
@@ -66,22 +66,17 @@ export function OrderCard({ order }: OrderCardProps) {
         {/* 정보 */}
         <div className="flex flex-1 items-center justify-between gap-4 p-4">
           <div className="flex flex-col gap-1">
-            {/* 숙소 이름 */}
-            {order.room?.accommodation_name && (
-              <p className="text-xs text-base-content/50">{order.room.accommodation_name}</p>
-            )}
-
-            {/* 객실 이름과 상태 배지 */}
-            <h3 className="text-base font-semibold">{order.room?.name ?? "객실 정보 없음"}</h3>
+            {/* 숙소 이름과 상태 배지 */}
+            <h3 className="text-base font-semibold">{order.lodging?.name ?? "숙소 정보 없음"}</h3>
 
             <div className="flex flex-wrap items-center gap-2">
               {/* 상태 배지 */}
               <span className={`badge badge-sm ${status.className}`}>{status.text}</span>
 
-              {/* 숙박 유형 배지 */}
-              {order.room?.stay_type && (
+              {/* 숙소 유형 배지 */}
+              {order.lodging?.type && (
                 <span className="badge badge-outline badge-sm">
-                  {getStayTypeLabel(order.room.stay_type)}
+                  {getLodgingTypeLabel(order.lodging.type)}
                 </span>
               )}
 
@@ -93,12 +88,6 @@ export function OrderCard({ order }: OrderCardProps) {
               <div className="flex items-center gap-3 text-xs text-base-content/50">
                 {/* 예약일 */}
                 <span>예약일: {orderDate}</span>
-
-                {/* 입실 시간 */}
-                {order.selectedTime && <span>입실 {order.selectedTime}</span>}
-
-                {/* 숙박 시간 */}
-                {order.duration?.hours && <span>{order.duration.hours}시간</span>}
               </div>
               <span className="text-lg font-bold">{order.used_points.toLocaleString()}P</span>
             </div>
