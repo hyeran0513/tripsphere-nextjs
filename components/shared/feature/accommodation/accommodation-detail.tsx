@@ -122,6 +122,7 @@ export function AccommodationDetail({ accommodationId }: AccommodationDetailProp
 
       <section>
         <h2 className="mb-4 text-xl font-bold">객실</h2>
+
         <div className="flex flex-col gap-6 lg:flex-row">
           {/* 객실 카드 */}
           <div className="flex-1">

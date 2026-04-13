@@ -59,6 +59,7 @@ export function SearchResult() {
       </div>
 
       <div className="flex flex-col gap-6 lg:flex-row">
+        {/* 검색 바 */}
         <aside className="w-full shrink-0 lg:w-72">
           <SearchBar
             city={city}
@@ -77,6 +78,7 @@ export function SearchResult() {
           />
         </aside>
 
+        {/* 검색 결과 리스트 */}
         <main className="min-w-0 flex-1">
           <AccommodationList
             accommodations={accommodations}

@@ -8,8 +8,13 @@ export default function DefaultLayout({
 }>) {
   return (
     <>
+      {/* 헤더 */}
       <Header />
+
+      {/* 메인 */}
       <main className="min-h-screen bg-base-100 pb-12">{children}</main>
+
+      {/* 푸터 */}
       <Footer />
     </>
   )

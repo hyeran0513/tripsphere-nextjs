@@ -12,7 +12,7 @@ import {
 } from "@/hooks/mutations/use-cart-mutation"
 import { useCartQuery } from "@/hooks/queries/use-cart-query"
 import { useToast } from "@/hooks/use-toast"
-import { ToastContainer } from "@/components/shared/ui/toast"
+import { ToastContainer } from "@/components/ui/toast"
 import type { Room } from "@/types/room"
 import {
   getDiscountedPrice,

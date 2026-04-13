@@ -4,6 +4,8 @@ import { useState } from "react"
 import Image from "next/image"
 import { Camera, ChevronLeft, ChevronRight, X } from "lucide-react"
 
+import { Modal } from "@/components/ui/modal"
+
 type AccommodationImagesProps = {
   images: string[]
   name: string
@@ -26,64 +28,60 @@ function ImageSlideModal({
   const next = () => setCurrent((c) => (c === images.length - 1 ? 0 : c + 1))
 
   return (
-    <dialog className="modal modal-open">
-      <div className="modal-box relative max-w-4xl p-0">
-        <button
-          type="button"
-          className="btn btn-circle btn-sm absolute right-3 top-3 z-10"
-          onClick={onClose}
-        >
-          <X className="size-4" />
-        </button>
+    <Modal
+      open
+      onClose={onClose}
+      boxClassName="relative max-w-4xl p-0"
+      backdropClassName="bg-black/70"
+    >
+      <button
+        type="button"
+        className="btn btn-circle btn-sm absolute right-3 top-3 z-10"
+        onClick={onClose}
+      >
+        <X className="size-4" />
+      </button>
 
-        <div className="relative aspect-video w-full">
-          <Image
-            src={images[current]}
-            alt={`${name} ${current + 1}`}
-            fill
-            className="object-contain bg-black"
-            sizes="(max-width: 896px) 100vw, 896px"
-            unoptimized
-          />
+      <div className="relative aspect-video w-full">
+        <Image
+          src={images[current]}
+          alt={`${name} ${current + 1}`}
+          fill
+          className="object-contain bg-black"
+          sizes="(max-width: 896px) 100vw, 896px"
+          unoptimized
+        />
 
-          {images.length > 1 && (
-            <>
-              {/* 이전 버튼 */}
-              <button
-                type="button"
-                className="btn btn-circle btn-sm absolute left-3 top-1/2 -translate-y-1/2 bg-base-100/80"
-                onClick={prev}
-              >
-                <ChevronLeft className="size-4" />
-              </button>
+        {images.length > 1 && (
+          <>
+            {/* 이전 버튼 */}
+            <button
+              type="button"
+              className="btn btn-circle btn-sm absolute left-3 top-1/2 -translate-y-1/2 bg-base-100/80"
+              onClick={prev}
+            >
+              <ChevronLeft className="size-4" />
+            </button>
 
-              {/* 다음 버튼 */}
-              <button
-                type="button"
-                className="btn btn-circle btn-sm absolute right-3 top-1/2 -translate-y-1/2 bg-base-100/80"
-                onClick={next}
-              >
-                <ChevronRight className="size-4" />
-              </button>
-            </>
-          )}
-        </div>
-
-        {/* 사진 인덱스 표시 */}
-        <div className="flex items-center justify-center gap-2 py-3">
-          <span className="text-sm text-base-content/60">
-            {current + 1} / {images.length}
-          </span>
-        </div>
+            {/* 다음 버튼 */}
+            <button
+              type="button"
+              className="btn btn-circle btn-sm absolute right-3 top-1/2 -translate-y-1/2 bg-base-100/80"
+              onClick={next}
+            >
+              <ChevronRight className="size-4" />
+            </button>
+          </>
+        )}
       </div>
 
-      {/* 배경 클릭 시 모달 닫기 */}
-      <form method="dialog" className="modal-backdrop bg-black/70">
-        <button type="button" onClick={onClose}>
-          close
-        </button>
-      </form>
-    </dialog>
+      {/* 사진 인덱스 표시 */}
+      <div className="flex items-center justify-center gap-2 py-3">
+        <span className="text-sm text-base-content/60">
+          {current + 1} / {images.length}
+        </span>
+      </div>
+    </Modal>
   )
 }
 
