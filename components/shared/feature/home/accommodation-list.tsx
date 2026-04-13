@@ -106,19 +106,25 @@ export function AccommodationList({
               <div className="flex items-start justify-between gap-2">
                 <div>
                   <div className="flex items-center gap-2">
+                    {/* 숙소 이름 */}
                     <h3 className="card-title text-base">{item.name}</h3>
+
+                    {/* 숙소 유형 배지 */}
                     {item.type && (
                       <span className="badge badge-outline badge-sm">
                         {getAccommodationTypeLabel(item.type)}
                       </span>
                     )}
                   </div>
+
+                  {/* 위치 정보 */}
                   <p className="mt-1 flex items-center gap-1 text-sm text-base-content/60">
                     <MapPin className="size-3.5" />
                     {item.location?.city} {item.location?.sub_city}
                   </p>
                 </div>
 
+                {/* 평점 정보 */}
                 {item.total_rating && item.review_count ? (
                   <div className="flex items-center gap-1 text-sm text-warning">
                     <Star className="size-4 fill-current" />
@@ -128,6 +134,7 @@ export function AccommodationList({
                 ) : null}
               </div>
 
+              {/* 숙소 설명 */}
               {item.description && (
                 <p className="line-clamp-2 text-sm text-base-content/70">{item.description}</p>
               )}
@@ -135,22 +142,31 @@ export function AccommodationList({
               {/* 객실 정보 */}
               {rooms.length > 0 && (
                 <div className="mt-auto flex flex-wrap items-center gap-3 border-t border-base-200 pt-2">
+                  {/* 객실 수 */}
                   <span className="text-xs text-base-content/50">객실 {rooms.length}개</span>
+
                   {minPriceRoom && (
                     <div className="flex items-center gap-2">
+                      {/* 숙박 유형 */}
                       <span className="badge badge-outline badge-xs">
                         {getStayTypeLabel(minPriceRoom.stay_type)}
                       </span>
+
                       {minPriceRoom.discount_rate > 0 && (
                         <>
+                          {/* 할인율 */}
                           <span className="text-xs font-bold text-error">
                             {formatDiscountRate(minPriceRoom.discount_rate)}
                           </span>
+
+                          {/* 원래 가격 */}
                           <span className="text-xs text-base-content/40 line-through">
                             {minPriceRoom.original_price.toLocaleString()}원
                           </span>
                         </>
                       )}
+
+                      {/* 최저가 */}
                       <span className="font-bold">
                         {getDiscountedPrice(minPriceRoom).toLocaleString()}원~
                       </span>

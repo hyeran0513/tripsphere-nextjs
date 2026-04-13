@@ -58,7 +58,6 @@ export function SearchResult() {
         ))}
       </div>
 
-      {/* 좌측 검색 + 우측 목록 */}
       <div className="flex flex-col gap-6 lg:flex-row">
         <aside className="w-full shrink-0 lg:w-72">
           <SearchBar

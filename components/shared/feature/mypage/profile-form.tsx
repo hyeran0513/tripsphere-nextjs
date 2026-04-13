@@ -42,11 +42,14 @@ function ProfileFormFields({ user, profile }: ProfileFormFieldsProps) {
 
       <form onSubmit={handleSubmit} className="card w-full border border-base-300 bg-base-100">
         <div className="card-body gap-4">
-          {/* 이메일 (읽기 전용) */}
+          {/* 이메일 */}
           <div className="form-control">
+            {/* 이메일 라벨 */}
             <label className="label">
               <span className="label-text font-medium">이메일</span>
             </label>
+
+            {/* 이메일 입력 필드 */}
             <input
               type="email"
               className="input input-bordered w-full bg-base-200"
@@ -57,9 +60,12 @@ function ProfileFormFields({ user, profile }: ProfileFormFieldsProps) {
 
           {/* 닉네임 */}
           <div className="form-control">
+            {/* 닉네임 라벨 */}
             <label className="label" htmlFor="profile-nickname">
               <span className="label-text font-medium">닉네임</span>
             </label>
+
+            {/* 닉네임 입력 필드 */}
             <div className="input input-bordered flex w-full items-center gap-2">
               <User className="size-4 text-base-content/40" />
               <input
@@ -75,9 +81,12 @@ function ProfileFormFields({ user, profile }: ProfileFormFieldsProps) {
 
           {/* 이름 */}
           <div className="form-control">
+            {/* 이름 라벨 */}
             <label className="label" htmlFor="profile-username">
               <span className="label-text font-medium">이름</span>
             </label>
+
+            {/* 이름 입력 필드 */}
             <div className="input input-bordered flex w-full items-center gap-2">
               <User className="size-4 text-base-content/40" />
               <input
@@ -93,9 +102,12 @@ function ProfileFormFields({ user, profile }: ProfileFormFieldsProps) {
 
           {/* 전화번호 */}
           <div className="form-control">
+            {/* 전화번호 라벨 */}
             <label className="label" htmlFor="profile-phone">
               <span className="label-text font-medium">전화번호</span>
             </label>
+
+            {/* 전화번호 입력 필드 */}
             <div className="input input-bordered flex w-full items-center gap-2">
               <Phone className="size-4 text-base-content/40" />
               <input
@@ -109,10 +121,12 @@ function ProfileFormFields({ user, profile }: ProfileFormFieldsProps) {
             </div>
           </div>
 
+          {/* 저장 버튼 */}
           <button type="submit" className="btn btn-primary mt-2" disabled={updateUser.isPending}>
             {updateUser.isPending ? "저장 중..." : "저장"}
           </button>
 
+          {/* 저장 완료 메시지 */}
           {saved && (
             <div className="alert alert-success text-sm">
               <Check className="size-4" />

@@ -28,7 +28,7 @@ export function TermsContent() {
       <h1 className="mb-6 text-2xl font-bold">이용약관</h1>
 
       <div className="flex flex-col gap-6 lg:flex-row">
-        {/* 약관 목록 (사이드) */}
+        {/* 약관 목록 */}
         <aside className="w-full shrink-0 lg:w-60">
           <ul className="menu w-full rounded-lg border border-base-300 bg-base-100 p-2">
             {terms?.map((t) => (

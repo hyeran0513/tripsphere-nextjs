@@ -38,6 +38,7 @@ export function BookingSearchBox({ onSearch }: BookingSearchBoxProps) {
               체크인 · 체크아웃
             </span>
           </label>
+
           <DatePicker
             selectsRange
             startDate={checkIn ? new Date(checkIn + "T00:00:00") : null}
@@ -65,6 +66,7 @@ export function BookingSearchBox({ onSearch }: BookingSearchBoxProps) {
               인원
             </span>
           </label>
+
           <div className="join w-full">
             <button
               type="button"
@@ -74,6 +76,7 @@ export function BookingSearchBox({ onSearch }: BookingSearchBoxProps) {
             >
               -
             </button>
+
             <input
               type="number"
               className="join-item w-full border border-base-300 text-center text-sm outline-none"
@@ -87,6 +90,7 @@ export function BookingSearchBox({ onSearch }: BookingSearchBoxProps) {
                 else if (v > 20) setGuests(20)
               }}
             />
+
             <button
               type="button"
               className="btn btn-outline btn-sm join-item"

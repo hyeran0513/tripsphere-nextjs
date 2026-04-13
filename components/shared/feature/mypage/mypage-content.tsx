@@ -50,18 +50,27 @@ export function MypageContent() {
       {/* 프로필 카드 */}
       <div className="card border border-base-300 bg-base-100">
         <div className="card-body flex-row items-center gap-4">
+          {/* 프로필 이미지 또는 이니셜 */}
           <div className="flex size-16 items-center justify-center rounded-full bg-primary text-2xl font-bold text-primary-content">
             {(profile?.nickname ?? user.email)?.[0]?.toUpperCase()}
           </div>
+
           <div className="flex-1">
+            {/* 사용자 이름 또는 닉네임 */}
             <h2 className="text-xl font-bold">
               {profile?.nickname ?? user.displayName ?? "사용자"}
             </h2>
+
+            {/* 이메일 주소 */}
             <p className="text-sm text-base-content/60">{profile?.email ?? user.email}</p>
+
+            {/* 사용자 이름 */}
             {profile?.username && (
               <p className="text-sm text-base-content/50">{profile.username}</p>
             )}
           </div>
+
+          {/* 숙소 예약 가능 포인트 */}
           <div className="text-right">
             <p className="text-xs text-base-content/50">보유 포인트</p>
             <p className="text-xl font-bold text-primary">{availablePoints.toLocaleString()}P</p>
@@ -73,6 +82,7 @@ export function MypageContent() {
       <div className="card border border-base-300 bg-base-100">
         <div className="card-body p-0">
           <ul className="menu w-full p-2">
+            {/* 메뉴 항목 */}
             {MENU_ITEMS.map((item) => (
               <li key={item.href}>
                 <Link href={item.href} className="flex items-center gap-3 py-4">
@@ -81,6 +91,8 @@ export function MypageContent() {
                 </Link>
               </li>
             ))}
+
+            {/* 로그아웃 버튼 */}
             <li>
               <button
                 type="button"

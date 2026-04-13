@@ -40,11 +40,16 @@ export function CityAccommodationSection({ city, label }: CityAccommodationSecti
   return (
     <section>
       <div className="mb-4 flex items-center justify-between">
+        {/* 섹션 제목 */}
         <h2 className="text-xl font-bold">{label}</h2>
+
         <div className="flex gap-1">
+          {/* 이전 버튼 */}
           <button type="button" className={`swiper-prev-${id} btn btn-circle btn-ghost btn-sm`}>
             <ChevronLeft className="size-4" />
           </button>
+
+          {/* 다음 버튼 */}
           <button type="button" className={`swiper-next-${id} btn btn-circle btn-ghost btn-sm`}>
             <ChevronRight className="size-4" />
           </button>
@@ -91,14 +96,20 @@ export function CityAccommodationSection({ city, label }: CityAccommodationSecti
                     </div>
                   )}
                 </figure>
+
                 <div className="py-3">
+                  {/* 숙소 이름 */}
                   <h3 className="truncate text-sm font-semibold">{item.name}</h3>
+
                   <div className="mt-1 flex items-center justify-between">
+                    {/* 숙소 유형 */}
                     {item.type && (
                       <span className="text-xs text-base-content/50">
                         {getAccommodationTypeLabel(item.type)}
                       </span>
                     )}
+
+                    {/* 평점 */}
                     {avgRating && (
                       <span className="flex items-center gap-0.5 text-xs text-warning">
                         <Star className="size-3 fill-current" />

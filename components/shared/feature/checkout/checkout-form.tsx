@@ -106,25 +106,39 @@ export function CheckoutForm() {
       {/* 객실 정보 */}
       <div className="card border border-base-300 bg-base-100">
         <div className="card-body gap-3">
+          {/* 객실 이름 */}
           <h3 className="card-title text-base">{room.name}</h3>
+
+          {/* 객실 설명 */}
           {room.description && <p className="text-sm text-base-content/60">{room.description}</p>}
+
           <div className="flex items-center gap-2">
+            {/* 숙박 유형 */}
             <span className="badge badge-outline">{getStayTypeLabel(room.stay_type)}</span>
+
+            {/* 인원 정보 */}
             <span className="badge badge-outline">
               성인 {room.capacity.adults}인 / 아동 {room.capacity.children}인
             </span>
           </div>
+
+          {/* 가격 정보 */}
           <div className="flex items-center gap-2">
             {room.discount_rate > 0 && (
               <>
+                {/* 할인율 */}
                 <span className="badge badge-error badge-sm font-bold">
                   {formatDiscountRate(room.discount_rate)}
                 </span>
+
+                {/* 원래 가격 */}
                 <span className="text-sm text-base-content/40 line-through">
                   {room.original_price.toLocaleString()}원
                 </span>
               </>
             )}
+
+            {/* 결제 가격 */}
             <span className="text-lg font-bold">{price.toLocaleString()}원</span>
           </div>
         </div>
@@ -135,10 +149,14 @@ export function CheckoutForm() {
         <div className="card border border-base-300 bg-base-100">
           <div className="card-body gap-4">
             <h3 className="font-semibold">대실 옵션</h3>
+
             <div className="form-control">
+              {/* 입실 시간 라벨 */}
               <label className="label" htmlFor="selectedTime">
                 <span className="label-text">입실 시간</span>
               </label>
+
+              {/* 입실 시간 입력 필드 */}
               <input
                 id="selectedTime"
                 type="time"
@@ -147,10 +165,14 @@ export function CheckoutForm() {
                 onChange={(e) => setSelectedTime(e.target.value)}
               />
             </div>
+
             <div className="form-control">
+              {/* 이용 시간 라벨 */}
               <label className="label" htmlFor="duration">
                 <span className="label-text">이용 시간</span>
               </label>
+
+              {/* 이용 시간 선택 필드 */}
               <select
                 id="duration"
                 className="select select-bordered w-full"
@@ -174,25 +196,32 @@ export function CheckoutForm() {
           <h3 className="font-semibold">결제 정보</h3>
 
           <div className="flex items-center justify-between">
+            {/* 보유 포인트 라벨 */}
             <span className="flex items-center gap-1 text-base-content/70">
               <Wallet className="size-4" />
               보유 포인트
             </span>
+
+            {/* 보유 포인트 값 */}
             <span className="font-semibold">{availablePoints.toLocaleString()}P</span>
           </div>
 
+          {/* 구분선 */}
           <div className="divider my-0" />
 
+          {/* 결제 금액 라벨 */}
           <div className="flex items-center justify-between">
             <span className="text-base-content/70">결제 금액</span>
             <span className="text-lg font-bold text-primary">{price.toLocaleString()}P</span>
           </div>
 
+          {/* 결제 후 잔액 라벨 */}
           <div className="flex items-center justify-between">
             <span className="text-base-content/70">결제 후 잔액</span>
             <span className="font-semibold">{(availablePoints - price).toLocaleString()}P</span>
           </div>
 
+          {/* 포인트 부족 경고 */}
           {!canPay && (
             <div className="alert alert-error">
               <span>포인트가 부족합니다.</span>

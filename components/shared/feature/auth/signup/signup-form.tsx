@@ -20,6 +20,7 @@ export function SignUpForm() {
 
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5">
           <fieldset className="fieldset space-y-4">
+            {/* 이메일 입력 필드 */}
             <InputField
               control={form.control}
               name="email"
@@ -32,6 +33,7 @@ export function SignUpForm() {
               disabled={isPending}
             />
 
+            {/* 비밀번호 입력 필드 */}
             <PasswordField
               control={form.control}
               name="password"
@@ -42,6 +44,7 @@ export function SignUpForm() {
               disabled={isPending}
             />
 
+            {/* 비밀번호 확인 입력 필드 */}
             <PasswordField
               control={form.control}
               name="confirmPassword"
@@ -53,6 +56,7 @@ export function SignUpForm() {
               disabled={isPending}
             />
 
+            {/* 닉네임 입력 필드 */}
             <InputField
               control={form.control}
               name="nickname"
@@ -63,6 +67,7 @@ export function SignUpForm() {
               disabled={isPending}
             />
 
+            {/* 이름 입력 필드 */}
             <InputField
               control={form.control}
               name="username"
@@ -73,6 +78,7 @@ export function SignUpForm() {
               disabled={isPending}
             />
 
+            {/* 전화번호 입력 필드 */}
             <InputField
               control={form.control}
               name="phone"
@@ -86,6 +92,7 @@ export function SignUpForm() {
             />
           </fieldset>
 
+          {/* 회원가입 오류 메시지 */}
           {form.formState.errors.root ? (
             <div className="alert alert-error text-sm" role="alert">
               <CircleAlert className="size-5 shrink-0" aria-hidden />
@@ -93,6 +100,7 @@ export function SignUpForm() {
             </div>
           ) : null}
 
+          {/* 회원가입 버튼 */}
           <div className="card-actions flex-col gap-3 pt-1">
             <button
               type="submit"
@@ -104,8 +112,10 @@ export function SignUpForm() {
           </div>
         </form>
 
+        {/* 구분선 */}
         <div className="divider text-base-content/50 my-0 text-xs">또는</div>
 
+        {/* 로그인 링크 */}
         <p className="text-center text-sm text-base-content/70">
           이미 계정이 있으신가요?{" "}
           <Link href={PATH.LOGIN} className="link link-primary font-medium">

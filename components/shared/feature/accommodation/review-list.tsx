@@ -18,6 +18,7 @@ export function ReviewList({ reviews }: ReviewListProps) {
       {reviews.map((review) => (
         <div key={review.id} className="rounded-lg border border-base-300 bg-base-100 p-4">
           <div className="flex items-center gap-2">
+            {/* 별점 */}
             <div className="flex items-center gap-0.5 text-warning">
               {Array.from({ length: 5 }).map((_, i) => (
                 <Star
@@ -26,10 +27,14 @@ export function ReviewList({ reviews }: ReviewListProps) {
                 />
               ))}
             </div>
+
+            {/* 작성 날짜 */}
             <span className="text-sm text-base-content/50">
               {new Date(review.created_at).toLocaleDateString("ko-KR")}
             </span>
           </div>
+
+          {/* 리뷰 내용 */}
           <p className="mt-2 text-sm">{review.comment}</p>
         </div>
       ))}

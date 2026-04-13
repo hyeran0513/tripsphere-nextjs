@@ -16,12 +16,15 @@ export function DatePickerField({ label, value, onChange, minDate }: DatePickerF
 
   return (
     <div className="form-control min-w-0 flex-1">
+      {/* 날짜 라벨 */}
       <label className="label py-0.5">
         <span className="label-text flex items-center gap-1 text-xs font-semibold">
           <CalendarDays className="size-3.5" />
           {label}
         </span>
       </label>
+
+      {/* 날짜 입력 필드 */}
       <input
         type="date"
         className="input input-bordered input-sm w-full"

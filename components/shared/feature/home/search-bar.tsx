@@ -63,6 +63,7 @@ export function SearchBar({
         </label>
 
         <div className="flex gap-2">
+          {/* 지역 선택 필드 */}
           <select
             className="select select-bordered select-sm flex-1"
             value={city}
@@ -80,6 +81,7 @@ export function SearchBar({
             ))}
           </select>
 
+          {/* 하위 지역 선택 필드 */}
           <select
             className="select select-bordered select-sm flex-1"
             value={subCity}
@@ -126,6 +128,7 @@ export function SearchBar({
 
       {/* 인원수 */}
       <div className={`form-control ${vertical ? "w-full" : "min-w-0 flex-1"}`}>
+        {/* 인원 수 라벨 */}
         <label className="label py-0.5">
           <span className="label-text flex items-center gap-1 text-xs font-semibold">
             <Users className="size-3.5" />
@@ -134,6 +137,7 @@ export function SearchBar({
         </label>
 
         <div className="join w-full">
+          {/* 감소 버튼 */}
           <button
             type="button"
             className="btn btn-outline btn-sm join-item"
@@ -142,6 +146,8 @@ export function SearchBar({
           >
             -
           </button>
+
+          {/* 인원 수 입력 */}
           <input
             type="number"
             className="join-item w-full border border-base-300 text-center text-sm outline-none"
@@ -155,6 +161,8 @@ export function SearchBar({
               else if (v > 20) onGuestsChange(20)
             }}
           />
+
+          {/* 증가 버튼 */}
           <button
             type="button"
             className="btn btn-outline btn-sm join-item"

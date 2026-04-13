@@ -20,6 +20,7 @@ export function LoginForm() {
 
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5">
           <fieldset className="fieldset space-y-4">
+            {/* 이메일 입력 필드 */}
             <InputField
               control={form.control}
               name="email"
@@ -32,6 +33,7 @@ export function LoginForm() {
               disabled={isPending}
             />
 
+            {/* 비밀번호 입력 필드 */}
             <PasswordField
               control={form.control}
               name="password"
@@ -43,6 +45,7 @@ export function LoginForm() {
             />
           </fieldset>
 
+          {/* 로그인 오류 메시지 */}
           {form.formState.errors.root ? (
             <div className="alert alert-error text-sm" role="alert">
               <CircleAlert className="size-5 shrink-0" aria-hidden />
@@ -50,6 +53,7 @@ export function LoginForm() {
             </div>
           ) : null}
 
+          {/* 로그인 버튼 */}
           <div className="card-actions flex-col gap-3 pt-1">
             <button
               type="submit"
@@ -61,8 +65,10 @@ export function LoginForm() {
           </div>
         </form>
 
+        {/* 구분선 */}
         <div className="divider text-base-content/50 my-0 text-xs">또는</div>
 
+        {/* 회원가입 링크 */}
         <p className="text-center text-sm text-base-content/70">
           계정이 없으신가요?{" "}
           <Link href={PATH.SIGNUP} className="font-medium text-primary hover:underline">

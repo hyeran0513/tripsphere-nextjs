@@ -47,9 +47,12 @@ function ReviewModal({ order, onClose }: { order: OrderWithDetails; onClose: () 
 
         {/* 별점 */}
         <div className="mt-4">
+          {/* 별점 라벨 */}
           <label className="label">
             <span className="label-text font-medium">별점</span>
           </label>
+
+          {/* 별점 선택 버튼 */}
           <div className="flex gap-1">
             {[1, 2, 3, 4, 5].map((v) => (
               <button key={v} type="button" className="cursor-pointer" onClick={() => setRating(v)}>
@@ -63,9 +66,12 @@ function ReviewModal({ order, onClose }: { order: OrderWithDetails; onClose: () 
 
         {/* 내용 */}
         <div className="form-control mt-4">
+          {/* 내용 라벨 */}
           <label className="label" htmlFor="reviewComment">
             <span className="label-text font-medium">리뷰 내용</span>
           </label>
+
+          {/* 리뷰 내용 입력 필드 */}
           <textarea
             id="reviewComment"
             className="textarea textarea-bordered w-full"
@@ -77,9 +83,12 @@ function ReviewModal({ order, onClose }: { order: OrderWithDetails; onClose: () 
         </div>
 
         <div className="modal-action">
+          {/* 닫기 버튼 */}
           <button type="button" className="btn btn-ghost btn-sm" onClick={onClose}>
             닫기
           </button>
+
+          {/* 리뷰 등록 버튼 */}
           <button
             type="button"
             className="btn btn-primary btn-sm"
@@ -90,6 +99,8 @@ function ReviewModal({ order, onClose }: { order: OrderWithDetails; onClose: () 
           </button>
         </div>
       </div>
+
+      {/* 모달 외부 클릭 시 닫기 */}
       <form method="dialog" className="modal-backdrop">
         <button type="button" onClick={onClose}>
           close
@@ -123,7 +134,7 @@ function OrderCard({ order }: { order: OrderWithDetails }) {
   return (
     <>
       <div className="card card-side border border-base-300 bg-base-100">
-        {/* 이미지 (왼쪽) */}
+        {/* 이미지 */}
         <figure className="relative min-h-32 w-40 shrink-0 sm:min-h-36 sm:w-52">
           {order.room?.image ? (
             <Image
@@ -141,40 +152,56 @@ function OrderCard({ order }: { order: OrderWithDetails }) {
           )}
         </figure>
 
-        {/* 정보 (중앙 + 오른쪽) */}
+        {/* 정보 */}
         <div className="flex flex-1 items-center justify-between gap-4 p-4">
-          {/* 왼쪽 정보 */}
           <div className="flex flex-col gap-1">
+            {/* 숙소 이름 */}
             {order.room?.accommodation_name && (
               <p className="text-xs text-base-content/50">{order.room.accommodation_name}</p>
             )}
+
+            {/* 객실 이름과 상태 배지 */}
             <h3 className="text-base font-semibold">{order.room?.name ?? "객실 정보 없음"}</h3>
+
             <div className="flex flex-wrap items-center gap-2">
+              {/* 상태 배지 */}
               <span className={`badge badge-sm ${status.className}`}>{status.text}</span>
+
+              {/* 숙박 유형 배지 */}
               {order.room?.stay_type && (
                 <span className="badge badge-outline badge-sm">
                   {getStayTypeLabel(order.room.stay_type)}
                 </span>
               )}
+
+              {/* 리뷰 완료 배지 */}
               {order.reviewed && <span className="badge badge-ghost badge-sm">리뷰 완료</span>}
             </div>
+
             <div className="mt-1 flex flex-wrap items-center justify-between gap-3">
               <div className="flex items-center gap-3 text-xs text-base-content/50">
+                {/* 예약일 */}
                 <span>예약일: {orderDate}</span>
+
+                {/* 입실 시간 */}
                 {order.selectedTime && <span>입실 {order.selectedTime}</span>}
+
+                {/* 숙박 시간 */}
                 {order.duration?.hours && <span>{order.duration.hours}시간</span>}
               </div>
               <span className="text-lg font-bold">{order.used_points.toLocaleString()}P</span>
             </div>
+
+            {/* 취소 사유 */}
             {order.cancel_reason && (
               <p className="mt-1 text-xs text-error">취소 사유: {order.cancel_reason}</p>
             )}
           </div>
 
-          {/* 오른쪽 버튼 */}
           <div className="flex shrink-0 flex-col items-end gap-2">
             {order.payment_status === "completed" && (
               <div className="flex flex-col gap-1">
+                {/* 리뷰 작성 버튼 */}
                 {canReview && (
                   <button
                     type="button"
@@ -185,6 +212,8 @@ function OrderCard({ order }: { order: OrderWithDetails }) {
                     리뷰 작성
                   </button>
                 )}
+
+                {/* 예약 취소 버튼 */}
                 <button
                   type="button"
                   className="btn btn-outline btn-error btn-sm"
@@ -206,13 +235,18 @@ function OrderCard({ order }: { order: OrderWithDetails }) {
         <dialog className="modal modal-open">
           <div className="modal-box">
             <h3 className="text-lg font-bold">예약 취소</h3>
+
             <p className="mt-2 text-sm text-base-content/70">
               정말 예약을 취소하시겠습니까? {order.used_points.toLocaleString()}P가 환불됩니다.
             </p>
+
             <div className="form-control mt-4">
+              {/* 취소 사유 라벨 */}
               <label className="label" htmlFor="cancelReason">
                 <span className="label-text">취소 사유 (선택)</span>
               </label>
+
+              {/* 취소 사유 입력 필드 */}
               <textarea
                 id="cancelReason"
                 className="textarea textarea-bordered w-full"
@@ -221,7 +255,9 @@ function OrderCard({ order }: { order: OrderWithDetails }) {
                 onChange={(e) => setCancelReason(e.target.value)}
               />
             </div>
+
             <div className="modal-action">
+              {/* 닫기 버튼 */}
               <button
                 type="button"
                 className="btn btn-ghost btn-sm"
@@ -232,6 +268,8 @@ function OrderCard({ order }: { order: OrderWithDetails }) {
               >
                 닫기
               </button>
+
+              {/* 예약 취소 확정 버튼 */}
               <button
                 type="button"
                 className="btn btn-error btn-sm"
@@ -242,6 +280,8 @@ function OrderCard({ order }: { order: OrderWithDetails }) {
               </button>
             </div>
           </div>
+
+          {/* 모달 외부 클릭 시 닫기 */}
           <form method="dialog" className="modal-backdrop">
             <button type="button" onClick={() => setShowCancelModal(false)}>
               close

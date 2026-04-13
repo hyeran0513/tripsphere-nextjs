@@ -71,7 +71,7 @@ export function CartList() {
 
           return (
             <div key={item.id} className="card card-side border border-base-300 bg-base-100">
-              {/* 이미지 (왼쪽) */}
+              {/* 이미지 */}
               <figure className="relative min-h-32 w-40 shrink-0 sm:min-h-36 sm:w-52">
                 {item.room?.image ? (
                   <Image
@@ -89,7 +89,7 @@ export function CartList() {
                 )}
               </figure>
 
-              {/* 정보 (중앙) */}
+              {/* 정보 */}
               <div className="card-body flex-1 gap-2 p-4">
                 {item.room?.accommodation_name && (
                   <p className="text-xs text-base-content/50">{item.room.accommodation_name}</p>
@@ -121,8 +121,9 @@ export function CartList() {
                 )}
               </div>
 
-              {/* 버튼 (오른쪽) */}
+              {/* 버튼 */}
               <div className="flex flex-col justify-center gap-2 border-l border-base-300 p-4">
+                {/* 예약하기 버튼 */}
                 <button
                   type="button"
                   className="btn btn-primary btn-sm"
@@ -130,6 +131,8 @@ export function CartList() {
                 >
                   예약하기
                 </button>
+
+                {/* 찜 제거 버튼 */}
                 <button
                   type="button"
                   className="btn btn-ghost btn-sm text-error"

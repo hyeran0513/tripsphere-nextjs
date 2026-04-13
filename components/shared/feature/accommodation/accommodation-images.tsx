@@ -48,6 +48,7 @@ function ImageSlideModal({
 
           {images.length > 1 && (
             <>
+              {/* 이전 버튼 */}
               <button
                 type="button"
                 className="btn btn-circle btn-sm absolute left-3 top-1/2 -translate-y-1/2 bg-base-100/80"
@@ -55,6 +56,8 @@ function ImageSlideModal({
               >
                 <ChevronLeft className="size-4" />
               </button>
+
+              {/* 다음 버튼 */}
               <button
                 type="button"
                 className="btn btn-circle btn-sm absolute right-3 top-1/2 -translate-y-1/2 bg-base-100/80"
@@ -66,12 +69,15 @@ function ImageSlideModal({
           )}
         </div>
 
+        {/* 사진 인덱스 표시 */}
         <div className="flex items-center justify-center gap-2 py-3">
           <span className="text-sm text-base-content/60">
             {current + 1} / {images.length}
           </span>
         </div>
       </div>
+
+      {/* 배경 클릭 시 모달 닫기 */}
       <form method="dialog" className="modal-backdrop bg-black/70">
         <button type="button" onClick={onClose}>
           close
@@ -108,7 +114,6 @@ export function AccommodationImages({ images, name }: AccommodationImagesProps) 
     <>
       <div className="relative overflow-hidden rounded-lg">
         <div className="flex h-80 gap-1 sm:h-[28rem]">
-          {/* 왼쪽 */}
           <button
             type="button"
             className="relative h-full flex-1 cursor-pointer overflow-hidden"
@@ -124,7 +129,6 @@ export function AccommodationImages({ images, name }: AccommodationImagesProps) 
             />
           </button>
 
-          {/* 가운데 위/아래 */}
           <div className="flex h-full flex-1 flex-col gap-1">
             <button
               type="button"
@@ -144,6 +148,7 @@ export function AccommodationImages({ images, name }: AccommodationImagesProps) 
                 <div className="h-full w-full bg-base-200" />
               )}
             </button>
+
             <button
               type="button"
               className="relative h-1/2 w-full cursor-pointer overflow-hidden"
@@ -164,7 +169,6 @@ export function AccommodationImages({ images, name }: AccommodationImagesProps) 
             </button>
           </div>
 
-          {/* 오른쪽 */}
           <button
             type="button"
             className="relative h-full flex-1 cursor-pointer overflow-hidden"

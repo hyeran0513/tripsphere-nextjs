@@ -10,9 +10,12 @@ export function Footer() {
   return (
     <footer className="border-t border-base-300 bg-base-100">
       <div className="mx-auto flex max-w-6xl flex-col items-start justify-between gap-4 px-4 py-8 sm:flex-row sm:items-center">
+        {/* 저작권 정보 */}
         <div className="text-xs text-base-content/40">
           &copy; {new Date().getFullYear()} TripSphere. All rights reserved.
         </div>
+
+        {/* 약관 링크 */}
         <div className="flex flex-wrap gap-x-6 gap-y-2 text-sm text-base-content/60">
           {terms?.map((term) => (
             <Link

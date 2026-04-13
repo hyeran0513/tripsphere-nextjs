@@ -120,7 +120,6 @@ export function AccommodationDetail({ accommodationId }: AccommodationDetailProp
 
       <div className="divider" />
 
-      {/* 객실 목록 + 검색 영역 */}
       <section>
         <h2 className="mb-4 text-xl font-bold">객실</h2>
         <div className="flex flex-col gap-6 lg:flex-row">
@@ -152,6 +151,7 @@ export function AccommodationDetail({ accommodationId }: AccommodationDetailProp
         </div>
       </section>
 
+      {/* 구분선 */}
       <div className="divider" />
 
       {/* 리뷰 */}
