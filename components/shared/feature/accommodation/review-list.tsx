@@ -3,6 +3,7 @@
 import { Star } from "lucide-react"
 
 import type { Review } from "@/types/review"
+import { NoData } from "@/components/ui/no-data"
 
 type ReviewListProps = {
   reviews: Review[]
@@ -10,7 +11,7 @@ type ReviewListProps = {
 
 export function ReviewList({ reviews }: ReviewListProps) {
   if (reviews.length === 0) {
-    return <p className="py-8 text-center text-sm text-base-content/50">아직 리뷰가 없습니다.</p>
+    return <NoData icon={<Star className="mb-3 size-12" />} title="아직 리뷰가 없습니다." />
   }
 
   return (

@@ -31,7 +31,7 @@ function ImageSlideModal({
     <Modal
       open
       onClose={onClose}
-      boxClassName="relative max-w-4xl p-0"
+      boxClassName="w-[91.6667%] max-w-4xl p-0"
       backdropClassName="bg-black/70"
     >
       <button

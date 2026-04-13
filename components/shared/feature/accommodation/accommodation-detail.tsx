@@ -11,6 +11,7 @@ import { AccommodationImages } from "./accommodation-images"
 import { BookingSearchBox } from "./booking-search-box"
 import { RoomCard } from "./room-card"
 import { ReviewList } from "./review-list"
+import { NoData } from "@/components/ui/no-data"
 
 type AccommodationDetailProps = {
   accommodationId: string
@@ -50,11 +51,7 @@ export function AccommodationDetail({ accommodationId }: AccommodationDetailProp
   }
 
   if (!accommodation) {
-    return (
-      <div className="flex flex-col items-center justify-center py-20 text-base-content/50">
-        <p className="text-lg font-medium">숙소를 찾을 수 없습니다.</p>
-      </div>
-    )
+    return <NoData title="숙소를 찾을 수 없습니다." />
   }
 
   const avgRating =

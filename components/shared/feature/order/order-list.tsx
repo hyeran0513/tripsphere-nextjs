@@ -7,6 +7,7 @@ import { PATH } from "@/constants/path"
 import { useAuth } from "@/hooks/auth/use-auth"
 import { useOrdersQuery } from "@/hooks/queries/use-orders-query"
 import { OrderCard } from "@/components/shared/feature/order/order-card"
+import { NoData } from "@/components/ui/no-data"
 
 export function OrderList() {
   const { user, isLoading: authLoading } = useAuth()
@@ -26,9 +27,7 @@ export function OrderList() {
 
   if (!user) {
     return (
-      <div className="flex flex-col items-center justify-center py-20 text-base-content/50">
-        <ClipboardList className="mb-3 size-12" />
-        <p className="text-lg font-medium">로그인이 필요합니다</p>
+      <NoData icon={<ClipboardList className="mb-3 size-12" />} title="로그인이 필요합니다">
         <button
           type="button"
           className="btn btn-primary btn-sm mt-4"
@@ -36,17 +35,17 @@ export function OrderList() {
         >
           로그인하기
         </button>
-      </div>
+      </NoData>
     )
   }
 
   if (!orders || orders.length === 0) {
     return (
-      <div className="flex flex-col items-center justify-center py-20 text-base-content/50">
-        <ClipboardList className="mb-3 size-12" />
-        <p className="text-lg font-medium">예약 내역이 없습니다</p>
-        <p className="text-sm">숙소를 검색하고 예약해보세요.</p>
-      </div>
+      <NoData
+        icon={<ClipboardList className="mb-3 size-12" />}
+        title="예약 내역이 없습니다"
+        description="숙소를 검색하고 예약해보세요."
+      />
     )
   }
 

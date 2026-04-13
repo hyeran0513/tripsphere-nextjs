@@ -1,10 +1,16 @@
-"use client"
-
-import { use } from "react"
 import { AccommodationDetail } from "@/components/shared/feature/accommodation/accommodation-detail"
+import { PageBoundary } from "@/components/ui/page-boundary"
 
-export default function AccommodationPage({ params }: { params: Promise<{ id: string }> }) {
-  const { id } = use(params)
+type AccommodationPageProps = {
+  params: Promise<{ id: string }>
+}
 
-  return <AccommodationDetail accommodationId={id} />
+export default async function AccommodationPage({ params }: AccommodationPageProps) {
+  const { id } = await params
+
+  return (
+    <PageBoundary>
+      <AccommodationDetail accommodationId={id} />
+    </PageBoundary>
+  )
 }

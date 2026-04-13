@@ -1,13 +1,11 @@
-"use client"
-
-import { Suspense } from "react"
 import { TermsContent } from "@/components/shared/feature/terms/terms-content"
 import { TermsFallback } from "@/components/shared/feature/terms/terms-fallback"
+import { PageBoundary } from "@/components/ui/page-boundary"
 
 export default function TermsPage() {
   return (
-    <Suspense fallback={<TermsFallback />}>
+    <PageBoundary loadingFallback={<TermsFallback />}>
       <TermsContent />
-    </Suspense>
+    </PageBoundary>
   )
 }

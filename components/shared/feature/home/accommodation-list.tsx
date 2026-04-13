@@ -12,6 +12,7 @@ import { getAccommodationTypeLabel } from "@/types/accommodation"
 import type { Accommodation } from "@/types/accommodation"
 import type { Room } from "@/types/room"
 import { getDiscountedPrice, formatDiscountRate, getStayTypeLabel } from "@/types/room"
+import { NoData } from "@/components/ui/no-data"
 
 type AccommodationListProps = {
   accommodations: Accommodation[]
@@ -52,21 +53,23 @@ export function AccommodationList({
 
   if (!hasSearched) {
     return (
-      <div className="flex flex-1 flex-col items-center justify-center py-16 text-base-content/50">
-        <MapPin className="mb-3 size-12" />
-        <p className="text-lg font-medium">숙소를 검색해보세요</p>
-        <p className="text-sm">지역과 날짜를 선택하고 검색하세요.</p>
-      </div>
+      <NoData
+        icon={<MapPin className="mb-3 size-12" />}
+        title="숙소를 검색해보세요"
+        description="지역과 날짜를 선택하고 검색하세요."
+        className="flex-1 py-16"
+      />
     )
   }
 
   if (accommodations.length === 0) {
     return (
-      <div className="flex flex-1 flex-col items-center justify-center py-16 text-base-content/50">
-        <MapPin className="mb-3 size-12" />
-        <p className="text-lg font-medium">검색 결과가 없습니다</p>
-        <p className="text-sm">다른 지역이나 날짜로 검색해보세요.</p>
-      </div>
+      <NoData
+        icon={<MapPin className="mb-3 size-12" />}
+        title="검색 결과가 없습니다"
+        description="다른 지역이나 날짜로 검색해보세요."
+        className="flex-1 py-16"
+      />
     )
   }
 

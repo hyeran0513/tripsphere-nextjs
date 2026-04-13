@@ -1,13 +1,11 @@
-"use client"
-
-import { Suspense } from "react"
 import { CheckoutForm } from "@/components/shared/feature/checkout/checkout-form"
 import { CheckoutFallback } from "@/components/shared/feature/checkout/checkout-fallback"
+import { PageBoundary } from "@/components/ui/page-boundary"
 
 export default function CheckoutPage() {
   return (
-    <Suspense fallback={<CheckoutFallback />}>
+    <PageBoundary loadingFallback={<CheckoutFallback />}>
       <CheckoutForm />
-    </Suspense>
+    </PageBoundary>
   )
 }

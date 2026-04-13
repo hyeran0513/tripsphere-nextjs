@@ -1,7 +1,10 @@
-"use client"
-
 import { CartList } from "@/components/shared/feature/cart/cart-list"
+import { PageBoundary } from "@/components/ui/page-boundary"
 
 export default function CartPage() {
-  return <CartList />
+  return (
+    <PageBoundary>
+      <CartList />
+    </PageBoundary>
+  )
 }
