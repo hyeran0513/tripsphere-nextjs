@@ -15,11 +15,11 @@
 
 #### - 메인 페이지
 
-![TripSphere 메인 화면](./images/main_capture.png)
+![TripSphere 메인 화면](./public/images/readme/main_capture.png)
 
 #### - 메인 페이지
 
-![TripSphere 상세 화면](./images/deatil_capture.png)
+![TripSphere 상세 화면](./public/images/readme/detail_capture.png)
 
 ---
 
