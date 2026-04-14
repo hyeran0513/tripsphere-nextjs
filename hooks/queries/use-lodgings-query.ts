@@ -1,7 +1,7 @@
 "use client"
 
 import { useQuery } from "@tanstack/react-query"
-import { collection, getDocs, query, where } from "firebase/firestore"
+import { collection, getDocs, limit, query, where } from "firebase/firestore"
 
 import { db } from "@/lib/firebase/client"
 import type { Lodging } from "@/types/lodging"
@@ -14,7 +14,7 @@ async function fetchLodgings(params: SearchParams): Promise<Lodging[]> {
     constraints.push(where("location.sub_city", "==", params.subCity))
   }
 
-  const q = query(collection(db, "public_lodgings"), ...constraints)
+  const q = query(collection(db, "public_lodgings"), ...constraints, limit(50))
   const snapshot = await getDocs(q)
 
   return snapshot.docs.map((doc) => ({
