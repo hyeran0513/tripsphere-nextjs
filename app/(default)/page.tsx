@@ -1,5 +1,10 @@
 import { CityLodgingSection } from "@/components/shared/feature/home/city-lodging-section"
 import { HomeHero } from "@/components/shared/feature/home/home-hero"
+import type { Metadata } from "next"
+
+export const metadata: Metadata = {
+  title: "TripSphere | 여행 숙소 예약",
+}
 
 const CITY_SECTIONS = [
   { city: "서울특별시", label: "서울 숙소" },

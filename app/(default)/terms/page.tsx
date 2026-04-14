@@ -1,6 +1,11 @@
 import { TermsContent } from "@/components/shared/feature/terms/terms-content"
 import { TermsFallback } from "@/components/shared/feature/terms/terms-fallback"
 import { PageBoundary } from "@/components/ui/page-boundary"
+import type { Metadata } from "next"
+
+export const metadata: Metadata = {
+  title: "이용약관 | TripSphere",
+}
 
 export default function TermsPage() {
   return (
