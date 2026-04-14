@@ -35,11 +35,13 @@ export function PointsPageContent() {
     },
   })
 
+  // 충전 핸들러
   const handleSubmit = () => {
     const value = Number(amount)
     if (value > 0) addPoints.mutate(value)
   }
 
+  // 로딩 중일 때 스케쥴러 표시
   if (authLoading || isLoading) {
     return (
       <div className="mx-auto max-w-6xl space-y-4 p-4">
@@ -49,6 +51,7 @@ export function PointsPageContent() {
     )
   }
 
+  // 로그인 안 되어 있을 때 로그인 페이지로 이동
   if (!user) {
     return (
       <div className="flex flex-col items-center justify-center py-20 text-base-content/50">
@@ -65,6 +68,7 @@ export function PointsPageContent() {
     )
   }
 
+  // 보유 포인트 계산
   const available = points ? calculateAvailablePoints(points) : 0
 
   return (
@@ -104,6 +108,8 @@ export function PointsPageContent() {
               {addPoints.isPending ? "충전 중..." : "충전"}
             </button>
           </div>
+
+          {/* 충전 버튼 */}
           <div className="flex flex-wrap gap-2">
             {[5000, 10000, 50000, 100000].map((v) => (
               <button

@@ -33,6 +33,7 @@ export function CheckoutForm() {
 
   const canPay = availablePoints >= price && price > 0
 
+  // 결제 버튼 클릭 시 예약 생성
   const handleSubmit = async () => {
     if (!user || !room || !lodging || !canPay) return
 
@@ -46,6 +47,7 @@ export function CheckoutForm() {
     setOrderComplete(true)
   }
 
+  // 로딩 중일 때 스케쥴러 표시
   if (authLoading || roomLoading || lodgingLoading) {
     return (
       <div className="mx-auto max-w-6xl space-y-4 p-4">
@@ -56,11 +58,13 @@ export function CheckoutForm() {
     )
   }
 
+  // 로그인 안 되어 있을 때 로그인 페이지로 이동
   if (!user) {
     router.push(PATH.LOGIN)
     return null
   }
 
+  // 숙소 또는 객실 정보가 없을 때 홈으로 이동
   if (!room || !lodging) {
     return (
       <NoData title="예약 정보를 찾을 수 없습니다.">
@@ -75,15 +79,23 @@ export function CheckoutForm() {
     )
   }
 
+  // 예약 완료 시 완료 메시지 표시
   if (orderComplete) {
     return (
       <div className="mx-auto flex max-w-6xl flex-col items-center justify-center py-20">
+        {/* 예약 완료 아이콘 */}
         <CheckCircle className="mb-4 size-16 text-success" />
+
+        {/* 예약 완료 메시지 */}
         <h2 className="text-2xl font-bold">예약이 완료되었습니다!</h2>
+
+        {/* 사용된 포인트 */}
         <p className="mt-2 text-base-content/60">
           {price.toLocaleString()} 포인트가 사용되었습니다.
         </p>
+
         <div className="mt-6 flex gap-3">
+          {/* 예약 내역 보기 */}
           <button
             type="button"
             className="btn btn-primary"
@@ -91,6 +103,8 @@ export function CheckoutForm() {
           >
             예약 내역 보기
           </button>
+
+          {/* 홈으로 이동 */}
           <button type="button" className="btn btn-ghost" onClick={() => router.push(PATH.HOME)}>
             홈으로
           </button>
@@ -99,6 +113,7 @@ export function CheckoutForm() {
     )
   }
 
+  // 예약 폼 표시
   return (
     <div className="mx-auto max-w-6xl space-y-6 p-4">
       <h1 className="text-2xl font-bold">결제하기</h1>

@@ -10,12 +10,7 @@ import { getLodgingTypeLabel } from "@/types/lodging"
 import type { OrderWithDetails } from "@/hooks/queries/use-orders-query"
 import { useCancelOrderMutation } from "@/hooks/mutations/use-order-mutation"
 import { OrderReviewModal } from "@/components/shared/feature/order/order-review-modal"
-
-const STATUS_LABEL: Record<string, { text: string; className: string }> = {
-  completed: { text: "예약 완료", className: "badge-outline" },
-  pending: { text: "결제 대기", className: "badge-outline" },
-  cancelled: { text: "취소됨", className: "badge-outline" },
-}
+import { ORDER_STATUS_LABEL } from "@/constants/order/order"
 
 type OrderCardProps = {
   order: OrderWithDetails
@@ -27,10 +22,11 @@ export function OrderCard({ order }: OrderCardProps) {
   const [cancelReason, setCancelReason] = useState("")
   const cancelOrder = useCancelOrderMutation()
 
-  const status = STATUS_LABEL[order.payment_status] ?? STATUS_LABEL.pending
+  const status = ORDER_STATUS_LABEL[order.payment_status] ?? ORDER_STATUS_LABEL.pending
   const orderDate = format(new Date(order.order_date), "yyyy.MM.dd HH:mm")
   const canReview = order.payment_status === "completed" && !order.reviewed
 
+  // 예약 취소 핸들러
   const handleCancel = async () => {
     await cancelOrder.mutateAsync({
       order_id: order.id,

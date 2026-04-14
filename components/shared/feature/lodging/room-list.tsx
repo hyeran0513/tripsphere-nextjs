@@ -1,15 +1,10 @@
 "use client"
 
-import Image from "next/image"
-import { Users, Maximize2, ChevronLeft, ChevronRight } from "lucide-react"
-import { useId } from "react"
-import { Swiper, SwiperSlide } from "swiper/react"
-import { Navigation, Pagination } from "swiper/modules"
-import "swiper/css"
-import "swiper/css/navigation"
-import "swiper/css/pagination"
+import { Users, Maximize2 } from "lucide-react"
 
 import type { Room } from "@/types/room"
+import { NoData } from "@/components/ui/no-data"
+import { RoomImageSwiper } from "@/components/shared/feature/lodging/room-image-swiper"
 
 type RoomListProps = {
   rooms: Room[]
@@ -29,9 +24,11 @@ export function RoomList({ rooms, isLoading, onBook }: RoomListProps) {
 
   if (rooms.length === 0) {
     return (
-      <div className="rounded-lg border border-dashed border-base-300 p-8 text-center text-sm text-base-content/60">
-        등록된 객실이 없습니다.
-      </div>
+      <NoData
+        icon={<Users className="mb-3 size-12" />}
+        title="등록된 객실이 없습니다."
+        description="등록된 객실이 없습니다."
+      />
     )
   }
 
@@ -67,10 +64,13 @@ export function RoomList({ rooms, isLoading, onBook }: RoomListProps) {
               )}
 
               <div className="flex flex-wrap gap-3 text-xs text-base-content/60">
+                {/* 인원 */}
                 <span className="flex items-center gap-1">
                   <Users className="size-3.5" />
                   기준 {room.capacity.adults}인 / 최대 {room.max_capacity}인
                 </span>
+
+                {/* 평수 */}
                 {room.size?.pyeong && (
                   <span className="flex items-center gap-1">
                     <Maximize2 className="size-3.5" />
@@ -79,6 +79,7 @@ export function RoomList({ rooms, isLoading, onBook }: RoomListProps) {
                 )}
               </div>
 
+              {/* 서비스 */}
               {room.services && room.services.length > 0 && (
                 <div className="flex flex-wrap gap-1">
                   {room.services.slice(0, 5).map((svc) => (
@@ -89,6 +90,7 @@ export function RoomList({ rooms, isLoading, onBook }: RoomListProps) {
                 </div>
               )}
 
+              {/* 가격 */}
               <div className="mt-auto flex flex-wrap items-end justify-between gap-3 pt-2">
                 <div>
                   {hasDiscount && room.original_price && (
@@ -105,6 +107,7 @@ export function RoomList({ rooms, isLoading, onBook }: RoomListProps) {
                   </div>
                 </div>
 
+                {/* 예약하기 */}
                 <button
                   type="button"
                   className="btn btn-primary btn-sm"
@@ -119,77 +122,5 @@ export function RoomList({ rooms, isLoading, onBook }: RoomListProps) {
         )
       })}
     </div>
-  )
-}
-
-type RoomImageSwiperProps = {
-  images: string[]
-  name: string
-}
-
-function RoomImageSwiper({ images, name }: RoomImageSwiperProps) {
-  const uid = useId().replace(/:/g, "")
-
-  if (images.length === 0) {
-    return (
-      <figure className="relative hidden aspect-[4/3] w-56 shrink-0 sm:block">
-        <div className="flex h-full w-full items-center justify-center bg-base-200 text-xs text-base-content/30">
-          이미지 없음
-        </div>
-      </figure>
-    )
-  }
-
-  return (
-    <figure className="group relative hidden aspect-[4/3] w-56 shrink-0 sm:block">
-      <Swiper
-        modules={[Navigation, Pagination]}
-        spaceBetween={0}
-        slidesPerView={1}
-        loop={images.length > 1}
-        navigation={{
-          prevEl: `.room-swiper-prev-${uid}`,
-          nextEl: `.room-swiper-next-${uid}`,
-        }}
-        pagination={{ clickable: true }}
-        className="h-full w-full [--swiper-pagination-bullet-inactive-color:#ffffff] [--swiper-pagination-color:#ffffff]"
-      >
-        {images.map((src, idx) => (
-          <SwiperSlide key={`${src}-${idx}`}>
-            <div className="relative h-full w-full">
-              <Image
-                src={src}
-                alt={`${name} ${idx + 1}`}
-                fill
-                className="object-cover"
-                sizes="14rem"
-                unoptimized
-              />
-            </div>
-          </SwiperSlide>
-        ))}
-      </Swiper>
-
-      {images.length > 1 && (
-        <>
-          <button
-            type="button"
-            aria-label="이전 이미지"
-            className={`room-swiper-prev-${uid} absolute left-2 top-1/2 z-10 flex size-7 -translate-y-1/2 items-center justify-center rounded-full bg-base-100/80 opacity-0 shadow transition-opacity group-hover:opacity-100`}
-            onClick={(e) => e.preventDefault()}
-          >
-            <ChevronLeft className="size-4" />
-          </button>
-          <button
-            type="button"
-            aria-label="다음 이미지"
-            className={`room-swiper-next-${uid} absolute right-2 top-1/2 z-10 flex size-7 -translate-y-1/2 items-center justify-center rounded-full bg-base-100/80 opacity-0 shadow transition-opacity group-hover:opacity-100`}
-            onClick={(e) => e.preventDefault()}
-          >
-            <ChevronRight className="size-4" />
-          </button>
-        </>
-      )}
-    </figure>
   )
 }

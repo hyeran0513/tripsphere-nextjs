@@ -2,7 +2,7 @@
 
 import { useRouter } from "next/navigation"
 import { signOut } from "firebase/auth"
-import { ClipboardList, Heart, LogOut, UserPen, Wallet } from "lucide-react"
+import { LogOut } from "lucide-react"
 import Link from "next/link"
 
 import { PATH } from "@/constants/path"
@@ -10,13 +10,7 @@ import { useAuth } from "@/hooks/auth/use-auth"
 import { useUserQuery } from "@/hooks/queries/use-user-query"
 import { usePointsQuery, calculateAvailablePoints } from "@/hooks/queries/use-points-query"
 import { auth } from "@/lib/firebase/client"
-
-const MENU_ITEMS = [
-  { label: "포인트 내역", href: PATH.POINTS, icon: Wallet },
-  { label: "예약 내역", href: PATH.ORDERS, icon: ClipboardList },
-  { label: "찜 목록", href: PATH.CART, icon: Heart },
-  { label: "회원정보 수정", href: PATH.PROFILE, icon: UserPen },
-]
+import { MENU_ITEMS } from "@/constants/mypage/menu-items"
 
 export function MypageContent() {
   const { user, isLoading: authLoading } = useAuth()
@@ -26,11 +20,13 @@ export function MypageContent() {
 
   const availablePoints = points ? calculateAvailablePoints(points) : 0
 
+  // 로그아웃 핸들러
   const handleLogout = async () => {
     await signOut(auth)
     router.push(PATH.HOME)
   }
 
+  // 로딩 중일 때 스케쥴러 표시
   if (authLoading || isLoading) {
     return (
       <div className="mx-auto max-w-6xl space-y-6 p-4">
@@ -40,6 +36,7 @@ export function MypageContent() {
     )
   }
 
+  // 로그인 안 되어 있을 때 로그인 페이지로 이동
   if (!user) {
     router.push(PATH.LOGIN)
     return null

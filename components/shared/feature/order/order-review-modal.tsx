@@ -17,6 +17,7 @@ export function OrderReviewModal({ order, onClose }: OrderReviewModalProps) {
   const [comment, setComment] = useState("")
   const createReview = useCreateReviewMutation()
 
+  // 리뷰 등록 핸들러
   const handleSubmit = async () => {
     if (!order.lodging_id || !comment.trim()) return
 
@@ -69,10 +70,12 @@ export function OrderReviewModal({ order, onClose }: OrderReviewModalProps) {
       </div>
 
       <div className="modal-action">
+        {/* 닫기 버튼 */}
         <button type="button" className="btn btn-ghost btn-sm" onClick={onClose}>
           닫기
         </button>
 
+        {/* 리뷰 등록 버튼 */}
         <button
           type="button"
           className="btn btn-primary btn-sm"

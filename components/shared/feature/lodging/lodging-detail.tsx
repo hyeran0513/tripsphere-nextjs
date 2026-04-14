@@ -59,6 +59,7 @@ export function LodgingDetail({ lodgingId }: LodgingDetailProps) {
   const cartItem = cartItems?.find((item) => item.lodging_id === lodging.id)
   const isInCart = !!cartItem
 
+  // 찜 버튼 클릭 핸들러
   const handleToggleWish = () => {
     if (!user) {
       router.push(PATH.LOGIN)
@@ -74,6 +75,7 @@ export function LodgingDetail({ lodgingId }: LodgingDetailProps) {
     }
   }
 
+  // 객실 예약 버튼 클릭 시 결제 페이지로 이동
   const handleBookRoom = (roomId: string) => {
     if (!user) {
       router.push(PATH.LOGIN)
