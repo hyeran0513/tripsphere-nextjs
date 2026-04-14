@@ -39,7 +39,7 @@ export function SearchBar({
 }: SearchBarProps) {
   return (
     <div
-      className={`${vertical ? "flex flex-col gap-3 rounded-2xl bg-white p-4 shadow-lg" : "flex w-full max-w-6xl items-end gap-2 rounded-2xl bg-white p-3 shadow-lg"}`}
+      className={`${vertical ? "flex flex-col gap-3 rounded-2xl bg-white p-4 shadow-lg" : "flex w-full max-w-6xl items-end gap-2 rounded-full bg-white p-3 pl-8 shadow-lg"}`}
     >
       {/* 지역 선택 필드 */}
       <RegionSelect
@@ -67,12 +67,11 @@ export function SearchBar({
       {/* 검색 버튼 */}
       <button
         type="button"
-        className={`btn btn-primary btn-sm ${vertical ? "w-full" : "shrink-0"} ${isSearching ? "loading" : ""}`}
+        className={`flex items-center justify-center bg-primary hover:bg-primary/80 text-white rounded-full size-[60px] cursor-pointer ${isSearching ? "loading" : ""}`}
         onClick={onSearch}
         disabled={isSearching}
       >
-        <Search className="size-4" />
-        {isSearching ? "검색 중..." : "검색"}
+        <Search className="size-6" />
       </button>
     </div>
   )

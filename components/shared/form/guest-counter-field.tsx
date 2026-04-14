@@ -1,6 +1,6 @@
 "use client"
 
-import { Users } from "lucide-react"
+import { Minus, Plus, Users } from "lucide-react"
 
 type GuestCounterFieldProps = {
   value: number
@@ -30,11 +30,11 @@ export function GuestCounterField({
         {/* 감소 버튼 */}
         <button
           type="button"
-          className="btn btn-outline btn-sm join-item"
+          className="btn h-8 w-8 flex items-center justify-center px-0 input-bordered join-item hover:bg-base-200/70"
           disabled={value <= min}
           onClick={() => onChange(value - 1)}
         >
-          -
+          <Minus className="size-4" />
         </button>
 
         {/* 인원 수 입력 */}
@@ -55,11 +55,11 @@ export function GuestCounterField({
         {/* 증가 버튼 */}
         <button
           type="button"
-          className="btn btn-outline btn-sm join-item"
+          className="btn h-8 w-8 flex items-center justify-center px-0 input-bordered join-item hover:bg-base-200/70"
           disabled={value >= max}
           onClick={() => onChange(value + 1)}
         >
-          +
+          <Plus className="size-4" />
         </button>
       </div>
     </div>
