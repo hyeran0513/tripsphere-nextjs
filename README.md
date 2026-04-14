@@ -1,36 +1,64 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+## 여행 예약 서비스 구축
 
-## Getting Started
+### **📍 팀원 역할 및 담당 업무**
 
-First, run the development server:
+| 이름   | 역할 | 담당 업무                                                                                                                                                                                                                            |
+| ------ | ---- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| 김혜란 | 팀장 | 메인페이지,<br/> 상품 목록 페이지,<br/> 상품 상세 페이지,<br/> 유저 정보 관리(내 정보 수정 페이지, 로그인 및 회원가입 페이지, 비밀번호 재설정 페이지), <br/> 포인트 내역 페이지, <br/> Firebase 데이터베이스 설계,<br/> UI/UX 설계, <br/> 시연 영상 및 발표 |
+| 박세진 | 팀원 | 주문 완료 페이지,<br/> 결제 페이지,<br/> UI/UX 설계, <br/> 결과 보고서 작성                                                                                                                                                                                  |
+| 최승이 | 팀원 | 마이페이지,<br/> 찜 목록 페이지,<br/> UI/UX 설계, <br/> QA 담당                                                                                                                                                                                     |
+| 형주희 | 팀원 | 주문 내역 페이지,<br/> 장바구니 페이지,<br/> UI/UX 설계, <br/> 결과 보고서 작성                                                                                                                                                                              |
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+---
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### **📍 미리보기**
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+#### - 상세 페이지
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+![Animation128](https://github.com/user-attachments/assets/1cb7f65c-0921-4283-a5d1-a4c8d37b3467)
 
-## Learn More
+#### - 결제 페이지
 
-To learn more about Next.js, take a look at the following resources:
+![Animation129](https://github.com/user-attachments/assets/2a60c30a-58af-4cb1-b806-6e3380a05c76)
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+---
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### **📍 주요 기능**
 
-## Deploy on Vercel
+**필수 기능** :
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+- [x] 회원인증
+  - [x] 기본정보 가입 (이메일, 비밀번호, 이름)
+  - [x] 로그인
+  - [x] 회원가입
+- [x] 전체 상품 목록 조회
+  - [x] 데이터 베이스에서 상품 목록을 가져옵니다.
+  - [x] 이미지, 상품명, 상품가격을 기본으로 출력합니다.
+  - [x] 재고에 따라 출력여부를 결정합니다.
+  - [x] 페이징을 만듭니다.
+- [x] 상품 옵션
+  - [x] 상세소개 페이지에서 상품 옵션을 선택합니다.
+  - [x] 날짜, 여행인원은 기본입니다.
+  - [x] 그 외 필요한 것은 별도로 기획합니다.
+- [x] 결제하기
+  - [x] 주문 페이지에서 로직 및 절차 없이 주문한 것으로 처리합니다.
+  - [x] 데이터베이스에 주문 정보를 저장합니다.
+- [x] 주문결과확인
+  - [x] 결제를 성공적으로 처리하면 주문한 상품결과를 출력합니다.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+**선택 기능** :
+
+- [x] 카테고리를 분류하여 상품을 출력합니다.
+- [x] 장바구니 담기
+  - [x] 이미지, 상품명, 옵션등을 노출시켜 전체 주문합계금액을 노출합니다.
+  - [x] 체크박스를 통해 상품을 선택/제외합니다.
+  - [x] 주문하기 버튼으로 결제화면으로 이동합니다.
+- [x] 주문내역확인
+  - [x] 별도 주문 내역페이지에 주문한 이력을 출력합니다.
+- [x] 그외 필요한기능을 추가해주세요. (포인트 내역, 찜 기능, 비밀번호 재설정 추가)
+
+---
+
+### **📍 시연영상**
+
+https://www.youtube.com/watch?v=1Ja1eEiGR60
