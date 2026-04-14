@@ -1,4 +1,3 @@
-/** 숙소 타입 라벨 (현재 데이터는 한글 그대로라 그대로 반환) */
 export function getLodgingTypeLabel(type: string): string {
   return type
 }

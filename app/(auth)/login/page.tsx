@@ -1,12 +1,12 @@
 import { Suspense } from "react"
 
 import { LoginForm } from "@/components/shared/feature/auth/login/login-form"
-import { LoginFallback } from "@/components/shared/feature/auth/login/login-fallback"
+import { PageBoundary } from "@/components/ui/page-boundary"
 
 export default function LoginPage() {
   return (
-    <Suspense fallback={<LoginFallback />}>
+    <PageBoundary>
       <LoginForm />
-    </Suspense>
+    </PageBoundary>
   )
 }

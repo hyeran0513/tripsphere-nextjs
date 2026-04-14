@@ -1,12 +1,10 @@
-import { Suspense } from "react"
-
 import { SignUpForm } from "@/components/shared/feature/auth/signup/signup-form"
-import { SignupFallback } from "@/components/shared/feature/auth/signup/signup-fallback"
+import { PageBoundary } from "@/components/ui/page-boundary"
 
 export default function SignupPage() {
   return (
-    <Suspense fallback={<SignupFallback />}>
+    <PageBoundary>
       <SignUpForm />
-    </Suspense>
+    </PageBoundary>
   )
 }
