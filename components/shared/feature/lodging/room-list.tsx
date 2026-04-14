@@ -1,7 +1,13 @@
 "use client"
 
 import Image from "next/image"
-import { Users, Maximize2 } from "lucide-react"
+import { Users, Maximize2, ChevronLeft, ChevronRight } from "lucide-react"
+import { useId } from "react"
+import { Swiper, SwiperSlide } from "swiper/react"
+import { Navigation, Pagination } from "swiper/modules"
+import "swiper/css"
+import "swiper/css/navigation"
+import "swiper/css/pagination"
 
 import type { Room } from "@/types/room"
 
@@ -34,29 +40,13 @@ export function RoomList({ rooms, isLoading, onBook }: RoomListProps) {
       {rooms.map((room) => {
         const isSoldOut = room.stock === 0
         const hasDiscount = !!room.discount_rate && room.discount_rate > 0
-        const thumb = room.images?.[0]
 
         return (
           <article
             key={room.id}
             className="card card-side border border-base-300 bg-base-100 overflow-hidden"
           >
-            <figure className="relative hidden w-56 shrink-0 sm:block">
-              {thumb ? (
-                <Image
-                  src={thumb}
-                  alt={room.name}
-                  fill
-                  className="object-cover"
-                  sizes="14rem"
-                  unoptimized
-                />
-              ) : (
-                <div className="flex h-full w-full items-center justify-center bg-base-200 text-xs text-base-content/30">
-                  이미지 없음
-                </div>
-              )}
-            </figure>
+            <RoomImageSwiper images={room.images ?? []} name={room.name} />
 
             <div className="flex flex-1 flex-col gap-3 p-4">
               <div className="flex flex-wrap items-start justify-between gap-2">
@@ -129,5 +119,77 @@ export function RoomList({ rooms, isLoading, onBook }: RoomListProps) {
         )
       })}
     </div>
+  )
+}
+
+type RoomImageSwiperProps = {
+  images: string[]
+  name: string
+}
+
+function RoomImageSwiper({ images, name }: RoomImageSwiperProps) {
+  const uid = useId().replace(/:/g, "")
+
+  if (images.length === 0) {
+    return (
+      <figure className="relative hidden aspect-[4/3] w-56 shrink-0 sm:block">
+        <div className="flex h-full w-full items-center justify-center bg-base-200 text-xs text-base-content/30">
+          이미지 없음
+        </div>
+      </figure>
+    )
+  }
+
+  return (
+    <figure className="group relative hidden aspect-[4/3] w-56 shrink-0 sm:block">
+      <Swiper
+        modules={[Navigation, Pagination]}
+        spaceBetween={0}
+        slidesPerView={1}
+        loop={images.length > 1}
+        navigation={{
+          prevEl: `.room-swiper-prev-${uid}`,
+          nextEl: `.room-swiper-next-${uid}`,
+        }}
+        pagination={{ clickable: true }}
+        className="h-full w-full [--swiper-pagination-bullet-inactive-color:#ffffff] [--swiper-pagination-color:#ffffff]"
+      >
+        {images.map((src, idx) => (
+          <SwiperSlide key={`${src}-${idx}`}>
+            <div className="relative h-full w-full">
+              <Image
+                src={src}
+                alt={`${name} ${idx + 1}`}
+                fill
+                className="object-cover"
+                sizes="14rem"
+                unoptimized
+              />
+            </div>
+          </SwiperSlide>
+        ))}
+      </Swiper>
+
+      {images.length > 1 && (
+        <>
+          <button
+            type="button"
+            aria-label="이전 이미지"
+            className={`room-swiper-prev-${uid} absolute left-2 top-1/2 z-10 flex size-7 -translate-y-1/2 items-center justify-center rounded-full bg-base-100/80 opacity-0 shadow transition-opacity group-hover:opacity-100`}
+            onClick={(e) => e.preventDefault()}
+          >
+            <ChevronLeft className="size-4" />
+          </button>
+          <button
+            type="button"
+            aria-label="다음 이미지"
+            className={`room-swiper-next-${uid} absolute right-2 top-1/2 z-10 flex size-7 -translate-y-1/2 items-center justify-center rounded-full bg-base-100/80 opacity-0 shadow transition-opacity group-hover:opacity-100`}
+            onClick={(e) => e.preventDefault()}
+          >
+            <ChevronRight className="size-4" />
+          </button>
+        </>
+      )}
+    </figure>
   )
 }

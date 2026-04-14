@@ -2,7 +2,7 @@
 
 import Image from "next/image"
 import Link from "next/link"
-import { Star, ChevronLeft, ChevronRight } from "lucide-react"
+import { Star, ChevronLeft, ChevronRight, ImageIcon } from "lucide-react"
 import { Swiper, SwiperSlide } from "swiper/react"
 import { Navigation } from "swiper/modules"
 import "swiper/css"
@@ -91,8 +91,8 @@ export function CityLodgingSection({ city, label }: CityLodgingSectionProps) {
                       unoptimized
                     />
                   ) : (
-                    <div className="flex h-full w-full items-center justify-center bg-base-200 text-xs text-base-content/30">
-                      이미지 없음
+                    <div className="flex h-full w-full items-center justify-center bg-base-200 text-base-content/30">
+                      <ImageIcon className="size-8" />
                     </div>
                   )}
                 </figure>
