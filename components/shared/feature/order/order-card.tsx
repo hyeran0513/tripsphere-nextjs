@@ -47,9 +47,9 @@ export function OrderCard({ order }: OrderCardProps) {
       <div className="card card-side border border-base-300 bg-base-100">
         {/* 이미지 */}
         <figure className="relative min-h-32 w-40 shrink-0 sm:min-h-36 sm:w-52">
-          {order.lodging?.image ? (
+          {(order.room?.image ?? order.lodging?.image) ? (
             <Image
-              src={order.lodging.image}
+              src={(order.room?.image ?? order.lodging?.image)!}
               alt={order.lodging?.name ?? "숙소"}
               fill
               className="object-cover"
@@ -69,6 +69,9 @@ export function OrderCard({ order }: OrderCardProps) {
             {/* 숙소 이름과 상태 배지 */}
             <h3 className="text-base font-semibold">{order.lodging?.name ?? "숙소 정보 없음"}</h3>
 
+            {/* 객실 이름 */}
+            {order.room?.name && <p className="text-sm text-base-content/60">{order.room.name}</p>}
+
             <div className="flex flex-wrap items-center gap-2">
               {/* 상태 배지 */}
               <span className={`badge badge-sm ${status.className}`}>{status.text}</span>
@@ -78,6 +81,11 @@ export function OrderCard({ order }: OrderCardProps) {
                 <span className="badge badge-outline badge-sm">
                   {getLodgingTypeLabel(order.lodging.type)}
                 </span>
+              )}
+
+              {/* 객실 타입 배지 */}
+              {order.room?.type && (
+                <span className="badge badge-outline badge-sm">{order.room.type}</span>
               )}
 
               {/* 리뷰 완료 배지 */}

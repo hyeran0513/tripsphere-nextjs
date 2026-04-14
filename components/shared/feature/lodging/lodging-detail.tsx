@@ -1,6 +1,6 @@
 "use client"
 
-import { Heart, MapPin, Phone, Star, Users } from "lucide-react"
+import { Heart, MapPin, Phone, Star } from "lucide-react"
 import { useRouter } from "next/navigation"
 
 import { PATH } from "@/constants/path"
@@ -12,12 +12,14 @@ import {
 import { useCartQuery } from "@/hooks/queries/use-cart-query"
 import { useLodgingDetailQuery } from "@/hooks/queries/use-lodging-detail-query"
 import { useReviewsQuery } from "@/hooks/queries/use-reviews-query"
+import { useRoomsQuery } from "@/hooks/queries/use-rooms-query"
 import { useToast } from "@/hooks/use-toast"
 import { ToastContainer } from "@/components/ui/toast"
 import { NoData } from "@/components/ui/no-data"
 import { getLodgingTypeLabel } from "@/types/lodging"
 import { LodgingImages } from "./lodging-images"
 import { ReviewList } from "./review-list"
+import { RoomList } from "./room-list"
 
 type LodgingDetailProps = {
   lodgingId: string
@@ -27,6 +29,7 @@ export function LodgingDetail({ lodgingId }: LodgingDetailProps) {
   const router = useRouter()
   const { user } = useAuth()
   const { data: lodging, isLoading } = useLodgingDetailQuery(lodgingId)
+  const { data: rooms, isLoading: roomsLoading } = useRoomsQuery(lodgingId)
   const { data: reviews } = useReviewsQuery(lodgingId)
   const { data: cartItems } = useCartQuery(user?.uid ?? null)
   const addToCart = useAddToCartMutation()
@@ -53,7 +56,6 @@ export function LodgingDetail({ lodgingId }: LodgingDetailProps) {
       ? (lodging.total_rating / lodging.review_count).toFixed(1)
       : null
 
-  const isSoldOut = lodging.stock === 0
   const cartItem = cartItems?.find((item) => item.lodging_id === lodging.id)
   const isInCart = !!cartItem
 
@@ -72,12 +74,12 @@ export function LodgingDetail({ lodgingId }: LodgingDetailProps) {
     }
   }
 
-  const handleBook = () => {
+  const handleBookRoom = (roomId: string) => {
     if (!user) {
       router.push(PATH.LOGIN)
       return
     }
-    const params = new URLSearchParams({ lodgingId: lodging.id })
+    const params = new URLSearchParams({ roomId })
     router.push(`${PATH.CHECKOUT}?${params.toString()}`)
   }
 
@@ -116,12 +118,6 @@ export function LodgingDetail({ lodgingId }: LodgingDetailProps) {
             {lodging.location?.city} {lodging.location?.sub_city} {lodging.location?.place_name}
           </p>
 
-          {/* 인원 */}
-          <p className="flex items-center gap-1 text-sm text-base-content/60">
-            <Users className="size-4" />
-            성인 {lodging.capacity.adults}인 / 아동 {lodging.capacity.children}인
-          </p>
-
           {/* 설명 */}
           {lodging.description && <p className="text-base-content/80">{lodging.description}</p>}
 
@@ -136,44 +132,27 @@ export function LodgingDetail({ lodgingId }: LodgingDetailProps) {
           )}
         </div>
 
+        <div className="flex justify-end">
+          <button
+            type="button"
+            className="btn btn-ghost"
+            disabled={addToCart.isPending || removeFromCart.isPending}
+            onClick={handleToggleWish}
+            title={isInCart ? "찜 해제" : "찜하기"}
+          >
+            <Heart
+              className={`size-5 ${isInCart ? "fill-red-500 text-red-500" : "text-base-content/40"}`}
+            />
+            <span className="ml-1 text-sm">{isInCart ? "찜 해제" : "찜하기"}</span>
+          </button>
+        </div>
+
         <div className="divider" />
 
-        {/* 예약 박스 */}
-        <section className="card border border-base-300 bg-base-100">
-          <div className="card-body gap-4">
-            <div className="flex flex-wrap items-end justify-between gap-3">
-              <div>
-                <div className="text-sm text-base-content/60">가격</div>
-                <div className="text-3xl font-bold">{lodging.price_point.toLocaleString()}원</div>
-              </div>
-              <div className={`text-sm font-medium ${isSoldOut ? "text-error" : "text-primary"}`}>
-                {isSoldOut ? "매진" : `남은 객실 ${lodging.stock}개`}
-              </div>
-            </div>
-
-            <div className="flex gap-2">
-              <button
-                type="button"
-                className="btn btn-primary flex-1"
-                disabled={isSoldOut}
-                onClick={handleBook}
-              >
-                예약하기
-              </button>
-
-              <button
-                type="button"
-                className="btn btn-ghost"
-                disabled={addToCart.isPending || removeFromCart.isPending}
-                onClick={handleToggleWish}
-                title={isInCart ? "찜 해제" : "찜하기"}
-              >
-                <Heart
-                  className={`size-5 ${isInCart ? "fill-red-500 text-red-500" : "text-base-content/40"}`}
-                />
-              </button>
-            </div>
-          </div>
+        {/* 객실 선택 */}
+        <section>
+          <h2 className="mb-4 text-xl font-bold">객실 선택</h2>
+          <RoomList rooms={rooms ?? []} isLoading={roomsLoading} onBook={handleBookRoom} />
         </section>
 
         <div className="divider" />

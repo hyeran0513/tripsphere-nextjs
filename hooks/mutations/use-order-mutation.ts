@@ -7,6 +7,7 @@ import { db } from "@/lib/firebase/client"
 
 type CreateOrderParams = {
   lodging_id: string
+  room_id: string
   user_id: string
   used_points: number
 }
@@ -15,6 +16,7 @@ async function createOrder(params: CreateOrderParams) {
   // 예약 생성
   const orderRef = await addDoc(collection(db, "orders"), {
     lodging_id: params.lodging_id,
+    room_id: params.room_id,
     user_id: params.user_id,
     order_date: new Date().toISOString(),
     payment_status: "completed",

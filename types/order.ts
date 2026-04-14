@@ -1,6 +1,7 @@
 export type Order = {
   id: string
   lodging_id: string
+  room_id: string
   user_id: string
   order_date: string
   payment_status: "pending" | "completed" | "cancelled"

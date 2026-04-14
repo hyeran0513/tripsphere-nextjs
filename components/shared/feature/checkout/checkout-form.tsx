@@ -2,38 +2,43 @@
 
 import { useState } from "react"
 import { useRouter, useSearchParams } from "next/navigation"
-import { CheckCircle, Wallet } from "lucide-react"
+import { CheckCircle, Maximize2, Users, Wallet } from "lucide-react"
 
 import { PATH } from "@/constants/path"
 import { useAuth } from "@/hooks/auth/use-auth"
 import { usePointsQuery, calculateAvailablePoints } from "@/hooks/queries/use-points-query"
 import { useCreateOrderMutation } from "@/hooks/mutations/use-order-mutation"
 import { useLodgingDetailQuery } from "@/hooks/queries/use-lodging-detail-query"
+import { useRoomDetailQuery } from "@/hooks/queries/use-room-detail-query"
 import { getLodgingTypeLabel } from "@/types/lodging"
 import { NoData } from "@/components/ui/no-data"
 
 export function CheckoutForm() {
   const router = useRouter()
   const searchParams = useSearchParams()
-  const lodgingId = searchParams.get("lodgingId")
+  const roomId = searchParams.get("roomId")
 
   const { user, isLoading: authLoading } = useAuth()
-  const { data: lodging, isLoading: lodgingLoading } = useLodgingDetailQuery(lodgingId)
+  const { data: room, isLoading: roomLoading } = useRoomDetailQuery(roomId)
+  const { data: lodging, isLoading: lodgingLoading } = useLodgingDetailQuery(
+    room?.accommodation_id ?? null
+  )
   const { data: points } = usePointsQuery(user?.uid ?? null)
   const createOrder = useCreateOrderMutation()
 
   const [orderComplete, setOrderComplete] = useState(false)
 
   const availablePoints = points ? calculateAvailablePoints(points) : 0
-  const price = lodging?.price_point ?? 0
+  const price = room?.price_point ?? 0
 
   const canPay = availablePoints >= price && price > 0
 
   const handleSubmit = async () => {
-    if (!user || !lodgingId || !lodging || !canPay) return
+    if (!user || !room || !lodging || !canPay) return
 
     await createOrder.mutateAsync({
-      lodging_id: lodgingId,
+      lodging_id: room.accommodation_id,
+      room_id: room.id,
       user_id: user.uid,
       used_points: price,
     })
@@ -41,7 +46,7 @@ export function CheckoutForm() {
     setOrderComplete(true)
   }
 
-  if (authLoading || lodgingLoading) {
+  if (authLoading || roomLoading || lodgingLoading) {
     return (
       <div className="mx-auto max-w-6xl space-y-4 p-4">
         <div className="skeleton h-8 w-40" />
@@ -56,7 +61,7 @@ export function CheckoutForm() {
     return null
   }
 
-  if (!lodging) {
+  if (!room || !lodging) {
     return (
       <NoData title="예약 정보를 찾을 수 없습니다.">
         <button
@@ -99,16 +104,19 @@ export function CheckoutForm() {
       <h1 className="text-2xl font-bold">결제하기</h1>
 
       <div className="flex flex-col gap-6 lg:flex-row lg:items-start">
-        {/* 예약 숙소 정보 */}
+        {/* 예약 숙소/객실 정보 */}
         <div className="flex-1 space-y-6">
           <div className="card border border-base-300 bg-base-100">
             <div className="card-body gap-3">
               {/* 숙소 이름 */}
-              <h3 className="card-title text-base">{lodging.name}</h3>
+              <div>
+                <div className="text-xs text-base-content/60">{lodging.name}</div>
+                <h3 className="card-title text-base">{room.name}</h3>
+              </div>
 
-              {/* 숙소 설명 */}
-              {lodging.description && (
-                <p className="text-sm text-base-content/60">{lodging.description}</p>
+              {/* 객실 설명 */}
+              {room.description && (
+                <p className="text-sm text-base-content/60">{room.description}</p>
               )}
 
               <div className="flex flex-wrap items-center gap-2">
@@ -117,14 +125,31 @@ export function CheckoutForm() {
                   <span className="badge badge-outline">{getLodgingTypeLabel(lodging.type)}</span>
                 )}
 
+                {/* 객실 타입 */}
+                {room.type && <span className="badge badge-outline">{room.type}</span>}
+
                 {/* 인원 정보 */}
                 <span className="badge badge-outline">
-                  성인 {lodging.capacity.adults}인 / 아동 {lodging.capacity.children}인
+                  <Users className="mr-1 size-3" />
+                  기준 {room.capacity.adults}인 / 최대 {room.max_capacity}인
                 </span>
+
+                {/* 크기 */}
+                {room.size?.pyeong && (
+                  <span className="badge badge-outline">
+                    <Maximize2 className="mr-1 size-3" />
+                    {room.size.pyeong}평
+                  </span>
+                )}
               </div>
 
               {/* 가격 정보 */}
               <div className="flex items-center gap-2">
+                {room.original_price && room.original_price > room.price_point && (
+                  <span className="text-sm text-base-content/40 line-through">
+                    {room.original_price.toLocaleString()}원
+                  </span>
+                )}
                 <span className="text-lg font-bold">{price.toLocaleString()}원</span>
               </div>
             </div>

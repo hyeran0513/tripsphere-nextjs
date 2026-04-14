@@ -53,9 +53,8 @@ export function CartList() {
     )
   }
 
-  const handleCheckout = (lodgingId: string) => {
-    const params = new URLSearchParams({ lodgingId })
-    router.push(`${PATH.CHECKOUT}?${params.toString()}`)
+  const handleViewLodging = (lodgingId: string) => {
+    router.push(`${PATH.LODGING}/${lodgingId}`)
   }
 
   return (
@@ -94,25 +93,17 @@ export function CartList() {
                   </span>
                 </div>
               )}
-
-              {item.lodging && (
-                <div className="flex items-center gap-2">
-                  <span className="text-lg font-bold">
-                    {item.lodging.price_point.toLocaleString()}원
-                  </span>
-                </div>
-              )}
             </div>
 
             {/* 버튼 */}
             <div className="flex flex-col justify-center gap-2 border-l border-base-300 p-4">
-              {/* 예약하기 버튼 */}
+              {/* 객실 보기 버튼 */}
               <button
                 type="button"
                 className="btn btn-primary btn-sm"
-                onClick={() => handleCheckout(item.lodging_id)}
+                onClick={() => handleViewLodging(item.lodging_id)}
               >
-                예약하기
+                객실 보기
               </button>
 
               {/* 찜 제거 버튼 */}

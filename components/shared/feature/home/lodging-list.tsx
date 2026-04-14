@@ -1,7 +1,7 @@
 "use client"
 
 import Image from "next/image"
-import { MapPin, Star, Users } from "lucide-react"
+import { MapPin, Star } from "lucide-react"
 import Link from "next/link"
 
 import { PATH } from "@/constants/path"
@@ -109,15 +109,6 @@ export function LodgingList({ lodgings, isSearching, hasSearched }: LodgingListP
             {item.description && (
               <p className="line-clamp-2 text-sm text-base-content/70">{item.description}</p>
             )}
-
-            <div className="mt-auto flex flex-wrap items-center justify-between gap-3 border-t border-base-200 pt-2">
-              <span className="flex items-center gap-1 text-xs text-base-content/60">
-                <Users className="size-3.5" />
-                성인 {item.capacity.adults} / 아동 {item.capacity.children}
-              </span>
-
-              <span className="font-bold">{item.price_point.toLocaleString()}원</span>
-            </div>
           </div>
         </Link>
       ))}

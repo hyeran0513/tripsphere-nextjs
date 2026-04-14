@@ -27,7 +27,6 @@ async function fetchCart(userId: string): Promise<CartItem[]> {
           const lodgingData = lodgingSnap.data() as Omit<Lodging, "id">
           item.lodging = {
             name: lodgingData.name,
-            price_point: lodgingData.price_point,
             type: lodgingData.type,
             image: lodgingData.images?.[0],
           }

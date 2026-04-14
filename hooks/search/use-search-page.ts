@@ -66,12 +66,9 @@ export function useSearchPage() {
 
   const filteredLodgings = useMemo(() => {
     const all = lodgingsQuery.data ?? []
-    const byGuests = all.filter(
-      (item) => item.capacity.adults + item.capacity.children >= guestsParam && item.stock > 0
-    )
-    if (category === "전체") return byGuests
-    return byGuests.filter((item) => item.type === category)
-  }, [lodgingsQuery.data, category, guestsParam])
+    if (category === "전체") return all
+    return all.filter((item) => item.type === category)
+  }, [lodgingsQuery.data, category])
 
   return {
     city,

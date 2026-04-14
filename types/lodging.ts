@@ -8,10 +8,6 @@ export type Lodging = {
   name: string
   description?: string
   type?: string
-  capacity: {
-    adults: number
-    children: number
-  }
   host?: {
     contact?: string
   }
@@ -23,10 +19,8 @@ export type Lodging = {
     latitude?: number
     longitude?: number
   }
-  price_point: number
   review_count?: number
   total_rating?: number
-  stock: number
   source?: {
     license_id?: string
     tour_content_id?: string

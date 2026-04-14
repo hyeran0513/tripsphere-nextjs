@@ -117,11 +117,6 @@ export function CityLodgingSection({ city, label }: CityLodgingSectionProps) {
                       </span>
                     )}
                   </div>
-
-                  {/* 가격 */}
-                  <div className="mt-1 text-sm font-bold">
-                    {item.price_point.toLocaleString()}원
-                  </div>
                 </div>
               </Link>
             </SwiperSlide>

@@ -6,13 +6,18 @@ import { collection, getDocs, query, where, orderBy, doc, getDoc } from "firebas
 import { db } from "@/lib/firebase/client"
 import type { Order } from "@/types/order"
 import type { Lodging } from "@/types/lodging"
+import type { Room } from "@/types/room"
 
 export type OrderWithDetails = Order & {
   lodging?: {
     name: string
     image?: string
     type?: string
-    price_point: number
+  }
+  room?: {
+    name: string
+    type?: string
+    image?: string
   }
 }
 
@@ -30,6 +35,7 @@ async function fetchOrders(userId: string): Promise<OrderWithDetails[]> {
       const order: OrderWithDetails = {
         id: orderDoc.id,
         lodging_id: data.lodging_id,
+        room_id: data.room_id,
         user_id: data.user_id,
         order_date: data.order_date,
         payment_status: data.payment_status,
@@ -46,11 +52,26 @@ async function fetchOrders(userId: string): Promise<OrderWithDetails[]> {
             name: lodgingData.name,
             image: lodgingData.images?.[0],
             type: lodgingData.type,
-            price_point: lodgingData.price_point,
           }
         }
       } catch {
         // 숙소 정보를 가져오지 못해도 예약은 표시
+      }
+
+      if (data.room_id) {
+        try {
+          const roomSnap = await getDoc(doc(db, "public_rooms", data.room_id))
+          if (roomSnap.exists()) {
+            const roomData = roomSnap.data() as Omit<Room, "id">
+            order.room = {
+              name: roomData.name,
+              type: roomData.type,
+              image: roomData.images?.[0],
+            }
+          }
+        } catch {
+          // 객실 정보를 가져오지 못해도 예약은 표시
+        }
       }
 
       return order

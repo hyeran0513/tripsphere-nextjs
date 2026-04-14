@@ -5,7 +5,6 @@ export type CartItem = {
   created_at: string
   lodging?: {
     name: string
-    price_point: number
     type?: string
     image?: string
   }
